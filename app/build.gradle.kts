@@ -69,6 +69,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.peko)
+    implementation(libs.androidx.paging.runtime)
 
     // UI layer libraries
     implementation(libs.material)
