@@ -4,6 +4,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("ru.practicum.android.diploma.plugins.developproperties")
+    id("com.google.devtools.ksp")
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
@@ -35,6 +37,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 kotlin {
@@ -44,13 +50,30 @@ kotlin {
 }
 
 dependencies {
+    implementation (libs.glide)
+    ksp(libs.ksp)
+    implementation(libs.gson)
+    implementation(libs.retrofit)
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    api(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.koin.android)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.peko)
+    implementation(libs.androidx.paging.runtime)
 
     // UI layer libraries
     implementation(libs.material)
     implementation(libs.constraintlayout)
-
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso.core)
