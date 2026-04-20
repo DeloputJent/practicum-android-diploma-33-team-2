@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/vacancySearchFragment">
+
+    <fragment
+        android:id="@+id/vacancySearchFragment"
+        android:name="ru.practicum.android.diploma.ui.vacancy.VacancySearchFragment"
+        android:label="Поиск вакансий"
+        tools:layout="@layout/fragment_vacancy_search">
+        <action
+            android:id="@+id/action_vacancySearchFragment_to_filterFragment"
+            app:destination="@id/filterFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="ru.practicum.android.diploma.ui.favorites.FavoritesFragment"
+        android:label="Избранные вакансии"
+        tools:layout="@layout/fragment_favorites" />
+
+    <fragment
+        android:id="@+id/teamFragment"
+        android:name="ru.practicum.android.diploma.ui.team.TeamFragment"
+        android:label="Наша команда"
+        tools:layout="@layout/fragment_team" />
+
+    <fragment
+        android:id="@+id/filterFragment"
+        android:name="ru.practicum.android.diploma.ui.filter.FilterFragment"
+        android:label="Фильтр"
+        tools:layout="@layout/fragment_filter" />
+
+</navigation>
