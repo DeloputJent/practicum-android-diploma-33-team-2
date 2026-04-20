@@ -10,13 +10,13 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.ActivityRootBinding
 
 class RootActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityRootBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRootBinding.inflate(layoutInflater)
+        val binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupNavController()
+        setupNavController(binding)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         // Пример использования access token для HeadHunter API
@@ -26,10 +26,10 @@ class RootActivity : AppCompatActivity() {
     private fun networkRequestExample(accessToken: String) {
         // ...
     }
-    private fun setupNavController() {
+    private fun setupNavController(binding: ActivityRootBinding) {
         val navHost = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
         val navController = navHost.navController
-        binding.bottomNavigationView.setupWithNavController(navController)
+        binding.bottomNavigationView.setupWithNavController(navHost.navController)
     }
 
 }
