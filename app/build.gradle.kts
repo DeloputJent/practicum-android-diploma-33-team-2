@@ -50,7 +50,7 @@ kotlin {
 }
 
 dependencies {
-    implementation (libs.glide)
+    implementation(libs.glide)
     ksp(libs.ksp)
     implementation(libs.gson)
     implementation(libs.retrofit)
