@@ -2,6 +2,7 @@ package ru.practicum.android.diploma
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 import ru.practicum.android.diploma.ui.favorites.di.favoritesModule
