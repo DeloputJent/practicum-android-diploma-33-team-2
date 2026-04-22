@@ -9,15 +9,15 @@ import ru.practicum.android.diploma.data.db.entity.VacancyCardEntity
 
 @Dao
 interface VacancyDao {
-    @Insert(entity = VacancyCardEntity::class,onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = VacancyCardEntity::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertVacancy(favoriteTrack: VacancyCardEntity)
 
     @Query("SELECT * FROM vacancy_card_table")
     suspend fun getVacancies(): List<VacancyCardEntity>
 
     @Query("SELECT id FROM vacancy_card_table")
-    suspend fun getVacanciesId():List<String>
+    suspend fun getVacanciesId(): List<String>
 
-    @Delete (entity = VacancyCardEntity::class)
-    suspend fun deleteVacancy (vacancyCardEntity: VacancyCardEntity)
+    @Delete(entity = VacancyCardEntity::class)
+    suspend fun deleteVacancy(vacancyCardEntity: VacancyCardEntity)
 }

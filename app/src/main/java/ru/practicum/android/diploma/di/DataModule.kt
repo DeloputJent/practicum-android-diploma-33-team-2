@@ -7,12 +7,12 @@ import ru.practicum.android.diploma.data.db.VacancyDatabase
 
 val dataModule = module {
 
-
     single {
         Room.databaseBuilder(
             androidContext(),
             VacancyDatabase::class.java,
-            "Vacancy_database.db")
+            "Vacancy_database.db"
+        )
             .build()
     }
 }

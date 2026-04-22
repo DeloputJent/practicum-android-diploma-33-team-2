@@ -12,7 +12,7 @@ class VacancyDbConvertor {
             vacancy.city,
             vacancy.salary,
             vacancy.logo,
-            )
+        )
     }
 
     fun map(vacancyEntity: VacancyCardEntity): VacancyCard {
@@ -23,6 +23,6 @@ class VacancyDbConvertor {
             vacancyEntity.city,
             vacancyEntity.salary,
             vacancyEntity.logo,
-            )
+        )
     }
 }
