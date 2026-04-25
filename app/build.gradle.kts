@@ -42,9 +42,6 @@ android {
         viewBinding = true
     }
 
-    defaultConfig {
-        vectorDrawables.useSupportLibrary = true
-    }
 }
 
 kotlin {
@@ -54,7 +51,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.appcompat.v7)
     implementation(libs.glide)
     ksp(libs.ksp)
     implementation(libs.gson)
