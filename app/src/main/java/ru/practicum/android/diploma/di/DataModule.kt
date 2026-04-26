@@ -1,9 +1,13 @@
 package ru.practicum.android.diploma.di
 
 import androidx.room.Room
+import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
+import retrofit2.Retrofit
 import ru.practicum.android.diploma.data.db.VacancyDatabase
+import ru.practicum.android.diploma.data.network.HhApi
+import ru.practicum.android.diploma.data.network.HhApiConstants
 
 val dataModule = module {
 
@@ -15,4 +19,12 @@ val dataModule = module {
         )
             .build()
     }
+    single { Gson() }
+    single {
+        Retrofit.Builder()
+            .baseUrl(HhApiConstants.BASE_URL)
+            .build()
+    }
+    single<HhApi> { get<Retrofit>().create(HhApi::class.java) }
+
 }
