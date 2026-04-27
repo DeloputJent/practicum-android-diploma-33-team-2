@@ -3,10 +3,15 @@ package ru.practicum.android.diploma.di
 import org.koin.dsl.module
 import ru.practicum.android.diploma.domain.db.api.FavoriteVacancyInteractor
 import ru.practicum.android.diploma.domain.db.impl.FavoriteVacancyInteractorImpl
+import ru.practicum.android.diploma.domain.search.api.SearchInteractor
+import ru.practicum.android.diploma.domain.search.impl.SearchInteractorImpl
 
 val interactorModule = module {
 
     single<FavoriteVacancyInteractor> {
         FavoriteVacancyInteractorImpl(get())
+    }
+    single<SearchInteractor> {
+        SearchInteractorImpl(get())
     }
 }
