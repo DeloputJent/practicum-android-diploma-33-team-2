@@ -5,9 +5,7 @@
     <!--строки экрана вакансия "Поиск вакансий" (search)-->
     <string name="search_search_of_vacancy">Поиск вакансий</string>
     <string name="search_enter_a_request">Введите запрос</string>
-    <string name="search_no_internet">Введите запрос</string>
-    <string name="search_list_of_vacancies_is_empty">Введите запрос</string>
-    <string name="search_no_list_of_vacancies">Не удалось получить список вакансий</string>
+    <string name="search_no_list_of_vacancies">Не удалось получить\n список вакансий</string>
     <string name="search_no_vacancies">Таких вакансий нет</string>
     <string name="search_founded_n_vacancies">Таких вакансий нет</string>
     <plurals name="search_founded_n_vacancies">
@@ -45,4 +43,8 @@
     <string name="favourites_favourites">Избранное</string>
     <string name="favourites_the_list_is_empty">Список пуст</string>
     <string name="favourites_couldnt_get_a_list_of_vacancies">Не удалось получить список вакансий</string>
+    <!--строки contentDescription-->
+    <string name="description_back">Назад</string>
+    <string name="description_home">Домой</string>
+    <string name="description_recent">Недавнее</string>
 </resources>

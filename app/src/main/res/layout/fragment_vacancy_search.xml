@@ -1,29 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Поиск вакансий"
+    <ImageView
+        android:id="@+id/imageMask"
+        android:layout_width="46dp"
+        android:layout_height="10dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/filterButton"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="7dp"
+        app:srcCompat="@drawable/ic_mask_46dp"/>
 
-    <Button
-        android:id="@+id/filterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Фильтр"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="284dp"
+        android:layout_height="26dp"
+        android:text="@string/search_search_of_vacancy"
+        style="@style/Medium_YS_Display_22sp_black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="43dp"/>
+
+    <ImageButton
+        android:id="@+id/buttonFilter"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:srcCompat="@drawable/ic_filter_off_24dp"
+        android:background="@null"
+        android:scaleType="center"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp"/>
+
+    <FrameLayout
+        android:id="@+id/frameInput"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="96dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/rounded_field_gray_12dp">
+
+        <EditText
+            android:id="@+id/editInputToSearch"
+            style="@style/Regular_YS_Display_16sp_black"
+            android:textColorHint="@color/HH_Gray"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="start|center_vertical"
+            android:background="@null"
+            android:focusableInTouchMode="true"
+            android:hint="@string/search_enter_a_request"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLength="50"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:textCursorDrawable="@drawable/ic_cursor_22dp"/>
+
+        <ImageView
+            android:id="@+id/imageEditSign"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="end"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_search_24dp" />
+    </FrameLayout>
+
+    <ProgressBar android:id="@+id/progressBar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toBottomOf="@+id/frameInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:indeterminateTint="@color/HH_Blue"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/textAmountOfFounded"
+        android:layout_width="284dp"
+        android:layout_height="26dp"
+        android:text="@string/search_no_vacancies"
+        android:textAlignment="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        style="@style/Medium_YS_Display_16sp_black"
+        android:textColor="@color/HH_White"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="163dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:background="@drawable/rounded_field_blue_12dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerVacancies"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintTop_toBottomOf="@id/textAmountOfFounded"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="@color/HH_White"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:visibility="gone"
+        tools:visibility="gone"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutBlankSearch"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/frameInput"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
+        tools:visibility="visible">
+        <ImageView
+            android:layout_width="328dp"
+            android:layout_height="223dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="156dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="end|center_vertical"
+            android:scaleType="center"
+            app:srcCompat="@drawable/pic_main_search_328dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutNoInternet"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/frameInput"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        tools:visibility="gone">
+        <ImageView
+            android:id="@+id/imageNoInternet"
+            android:layout_width="328dp"
+            android:layout_height="223dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="135dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="end|center_vertical"
+            android:scaleType="center"
+            app:srcCompat="@drawable/pic_no_internet_328dp"/>
+        <TextView
+            android:layout_width="268dp"
+            android:layout_height="wrap_content"
+            android:text="@string/search_no_connection"
+            style="@style/Medium_YS_Display_22sp_black"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@id/imageNoInternet"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/imageNoInternet"
+            android:layout_marginStart="30dp"
+            app:layout_constraintEnd_toEndOf="@id/imageNoInternet"
+            android:layout_marginEnd="30dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutNoVacancies"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/textAmountOfFounded"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        tools:visibility="gone">
+        <ImageView
+            android:id="@+id/imageNoVacancies"
+            android:layout_width="328dp"
+            android:layout_height="223dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="103dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="end|center_vertical"
+            android:scaleType="center"
+            app:srcCompat="@drawable/pic_nothing_found_328dp"/>
+        <TextView
+            android:layout_width="268dp"
+            android:layout_height="wrap_content"
+            android:text="@string/search_no_list_of_vacancies"
+            style="@style/Medium_YS_Display_22sp_black"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@id/imageNoVacancies"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/imageNoVacancies"
+            android:layout_marginStart="30dp"
+            app:layout_constraintEnd_toEndOf="@id/imageNoVacancies"
+            android:layout_marginEnd="30dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
