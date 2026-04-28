@@ -1,27 +1,3 @@
-Index: .idea/deviceManager.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
-diff --git a/.idea/deviceManager.xml b/.idea/deviceManager.xml
-new file mode 100644
---- /dev/null	(date 1776625078661)
-+++ b/.idea/deviceManager.xml	(date 1776625078661)
-@@ -0,0 +1,13 @@
-+<?xml version="1.0" encoding="UTF-8"?>
-+<project version="4">
-+  <component name="DeviceTable">
-+    <option name="columnSorters">
-+      <list>
-+        <ColumnSorterState>
-+          <option name="column" value="Name" />
-+          <option name="order" value="ASCENDING" />
-+        </ColumnSorterState>
-+      </list>
-+    </option>
-+  </component>
-+</project>
-\ No newline at end of file
 Index: .idea/runConfigurations.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
@@ -29,8 +5,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 ===================================================================
 diff --git a/.idea/runConfigurations.xml b/.idea/runConfigurations.xml
 new file mode 100644
---- /dev/null	(date 1776697696683)
-+++ b/.idea/runConfigurations.xml	(date 1776697696683)
+--- /dev/null	(date 1777145765973)
++++ b/.idea/runConfigurations.xml	(date 1777145765973)
 @@ -0,0 +1,17 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<project version="4">
@@ -50,6 +26,25 @@ new file mode 100644
 +  </component>
 +</project>
 \ No newline at end of file
+Index: .idea/markdown.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/markdown.xml b/.idea/markdown.xml
+new file mode 100644
+--- /dev/null	(date 1777145765970)
++++ b/.idea/markdown.xml	(date 1777145765970)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="MarkdownSettings">
++    <option name="previewPanelProviderInfo">
++      <ProviderInfo name="Compose (experimental)" className="com.intellij.markdown.compose.preview.ComposePanelProvider" />
++    </option>
++  </component>
++</project>
+\ No newline at end of file
 Index: .idea/AndroidProjectSystem.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
@@ -57,8 +52,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 ===================================================================
 diff --git a/.idea/AndroidProjectSystem.xml b/.idea/AndroidProjectSystem.xml
 new file mode 100644
---- /dev/null	(date 1776697696651)
-+++ b/.idea/AndroidProjectSystem.xml	(date 1776697696651)
+--- /dev/null	(date 1777145765966)
++++ b/.idea/AndroidProjectSystem.xml	(date 1777145765966)
 @@ -0,0 +1,6 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<project version="4">
