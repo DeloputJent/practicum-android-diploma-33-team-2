@@ -16,6 +16,7 @@ import ru.practicum.android.diploma.util.Resource
 
 class VacancySearchViewModel(
     private val searchInteractor: SearchInteractor,
+    private val debounceMs: Long,
 ) : ViewModel() {
 
     private val queryFlow = MutableStateFlow("")
@@ -36,7 +37,7 @@ class VacancySearchViewModel(
     private fun observeQuery() {
         viewModelScope.launch {
             queryFlow
-                .debounce(2000)
+                .debounce(debounceMs)
                 .map { it.trim() }
                 .filter { it.isNotBlank() }
                 .distinctUntilChanged()
