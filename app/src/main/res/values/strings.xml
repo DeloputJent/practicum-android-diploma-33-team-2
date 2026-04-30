@@ -18,6 +18,7 @@
     </plurals>
     <string name="search_no_connection">Нет интернета</string>
     <string name="search_server_error">Ошибка сервера</string>
+    <string name="search_salary_not_specified">Зарплата не указана</string>
     <!--строки экранов "Фильтрация"(filter)-->
     <string name="filter_filter_settings">Настройки фильтрации</string>
     <string name="filter_job_location">Место работы</string>
