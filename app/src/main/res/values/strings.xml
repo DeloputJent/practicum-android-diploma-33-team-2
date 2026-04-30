@@ -39,6 +39,14 @@
     <string name="vacancy_vacancy">Вакансия</string>
     <string name="vacancy_The_vacancy_was_not_found_or_deleted">Вакансия не найдена или удалена</string>
     <string name="vacancy_server_error">Ошибка сервера</string>
+    <string name="vacancy_experience">Требуемый опыт</string>
+    <string name="vacancy_schedule">График работы</string>
+    <string name="vacancy_employment">Занятость</string>
+    <string name="vacancy_contacts">Контакты:</string>
+    <string name="vacancy_contacts_email">e-mail:</string>
+    <string name="vacancy_contacts_phones">Контактный телефон:</string>
+    <string name="vacancy_contacts_num">Требуемый опыт</string>
+    <string name="vacancy_skills">Ключевые навыки</string>
     <!--строки экрана Избранное(favourites)-->
     <string name="favourites_favourites">Избранное</string>
     <string name="favourites_the_list_is_empty">Список пуст</string>
