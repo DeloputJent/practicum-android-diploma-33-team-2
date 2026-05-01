@@ -1,0 +1,47 @@
+Index: app/src/main/res/layout/fragment_vacancy_detail.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n    <ImageView\r\n        android:id=\"@+id/imageMask\"\r\n        android:layout_width=\"46dp\"\r\n        android:layout_height=\"10dp\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        android:layout_marginEnd=\"8dp\"\r\n        android:layout_marginTop=\"7dp\"\r\n        app:srcCompat=\"@drawable/ic_mask_46dp\"/>\r\n    <ImageButton\r\n        android:id=\"@+id/buttonGoBack\"\r\n        android:layout_width=\"48dp\"\r\n        android:layout_height=\"48dp\"\r\n        app:srcCompat=\"@drawable/ic_arrow_back_24dp\"\r\n        android:background=\"@null\"\r\n        android:scaleType=\"center\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        android:layout_marginTop=\"32dp\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        android:layout_marginStart=\"4dp\"/>\r\n    <TextView\r\n        android:id=\"@+id/textTitle\"\r\n        android:layout_width=\"192dp\"\r\n        android:layout_height=\"26dp\"\r\n        android:text=\"@string/vacancy_vacancy\"\r\n        style=\"@style/Medium_YS_Display_22sp_black\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        android:layout_marginStart=\"56dp\"\r\n        android:layout_marginTop=\"43dp\"/>\r\n    <ImageButton\r\n        android:id=\"@+id/buttonShareVacancy\"\r\n        android:layout_width=\"48dp\"\r\n        android:layout_height=\"48dp\"\r\n        app:srcCompat=\"@drawable/ic_sharing_24dp\"\r\n        android:background=\"@null\"\r\n        android:scaleType=\"center\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        android:layout_marginTop=\"32dp\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        android:layout_marginEnd=\"60dp\"/>\r\n    <ImageButton\r\n        android:id=\"@+id/buttonAddToFavorite\"\r\n        android:layout_width=\"48dp\"\r\n        android:layout_height=\"48dp\"\r\n        app:srcCompat=\"@drawable/ic_favorites_off__24dp\"\r\n        android:background=\"@null\"\r\n        android:scaleType=\"center\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        android:layout_marginTop=\"32dp\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        android:layout_marginEnd=\"8dp\"/>\r\n\r\n    <TextView\r\n        android:id=\"@+id/textVacancyName\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"38dp\"\r\n        tools:text=\"Android-разработчик\"\r\n        style=\"@style/Bold_YS_Display_32sp_black\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        android:layout_marginTop=\"112dp\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        android:layout_marginStart=\"16dp\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        android:layout_marginEnd=\"16dp\"/>\r\n    <TextView\r\n        android:id=\"@+id/textSalary\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"26dp\"\r\n        tools:text=\"от 100 000 ₽\"\r\n        style=\"@style/Medium_YS_Display_22sp_black\"\r\n        app:layout_constraintTop_toBottomOf=\"@id/textVacancyName\"\r\n        app:layout_constraintStart_toStartOf=\"@id/textVacancyName\"\r\n        app:layout_constraintEnd_toEndOf=\"@id/textVacancyName\"/>\r\n    <ImageView\r\n        android:id=\"@+id/cardField\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"80dp\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        android:layout_marginTop=\"204dp\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        android:layout_marginStart=\"16dp\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        android:layout_marginEnd=\"16dp\"\r\n        android:background=\"@drawable/rounded_field_gray_12dp\"/>\r\n    <ImageView\r\n        android:id=\"@+id/imageLogo\"\r\n        android:layout_width=\"48dp\"\r\n        android:layout_height=\"48dp\"\r\n        app:layout_constraintTop_toTopOf=\"@id/cardField\"\r\n        android:layout_marginTop=\"16dp\"\r\n        app:layout_constraintStart_toStartOf=\"@id/cardField\"\r\n        android:layout_marginStart=\"16dp\"\r\n        android:src=\"@drawable/ic_placeholder_logo_48dp\"\r\n        android:background=\"@drawable/rounded_field_gray_12dp\"/>\r\n    <TextView\r\n        android:id=\"@+id/textCompanyName\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"26dp\"\r\n        style=\"@style/Medium_YS_Display_22sp_black\"\r\n        tools:text=\"Еда\"\r\n        app:layout_constraintTop_toTopOf=\"@id/cardField\"\r\n        android:layout_marginTop=\"16dp\"\r\n        app:layout_constraintStart_toStartOf=\"@id/cardField\"\r\n        android:layout_marginStart=\"72dp\"\r\n        app:layout_constraintEnd_toEndOf=\"@id/cardField\"\r\n        android:layout_marginEnd=\"16dp\"/>\r\n    <TextView\r\n        android:id=\"@+id/textCity\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"19dp\"\r\n        style=\"@style/Regular_YS_Display_16sp_black\"\r\n        tools:text=\"Москва\"\r\n        app:layout_constraintTop_toBottomOf=\"@id/textCompanyName\"\r\n        app:layout_constraintStart_toStartOf=\"@id/cardField\"\r\n        android:layout_marginStart=\"72dp\"\r\n        app:layout_constraintEnd_toEndOf=\"@id/cardField\"\r\n        android:layout_marginEnd=\"16dp\"/>\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>\r\n
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_vacancy_detail.xml b/app/src/main/res/layout/fragment_vacancy_detail.xml
+--- a/app/src/main/res/layout/fragment_vacancy_detail.xml	(revision 4aede466d144e4c31e2e0d6a30b21c65103a380d)
++++ b/app/src/main/res/layout/fragment_vacancy_detail.xml	(date 1777406236769)
+@@ -13,17 +13,18 @@
+         android:layout_marginEnd="8dp"
+         android:layout_marginTop="7dp"
+         app:srcCompat="@drawable/ic_mask_46dp"/>
++
+     <ImageButton
+         android:id="@+id/buttonGoBack"
+         android:layout_width="48dp"
+-        android:layout_height="48dp"
+-        app:srcCompat="@drawable/ic_arrow_back_24dp"
++        android:layout_height="0dp"
++        android:layout_marginStart="4dp"
++        android:layout_marginTop="32dp"
+         android:background="@null"
+         android:scaleType="center"
+-        app:layout_constraintTop_toTopOf="parent"
+-        android:layout_marginTop="32dp"
+         app:layout_constraintStart_toStartOf="parent"
+-        android:layout_marginStart="4dp"/>
++        app:layout_constraintTop_toTopOf="parent"
++        app:srcCompat="@drawable/ic_arrow_back_24dp" />
+     <TextView
+         android:id="@+id/textTitle"
+         android:layout_width="192dp"
+@@ -123,4 +124,14 @@
+         app:layout_constraintEnd_toEndOf="@id/cardField"
+         android:layout_marginEnd="16dp"/>
+ 
++    <ScrollView
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
++        app:layout_constraintTop_toBottomOf="@id/cardField"
++        android:layout_marginTop="24dp"
++        app:layout_constraintStart_toStartOf="@id/cardField"
++        app:layout_constraintEnd_toEndOf="@id/cardField">
++
++    </ScrollView>
++
+ </androidx.constraintlayout.widget.ConstraintLayout>
