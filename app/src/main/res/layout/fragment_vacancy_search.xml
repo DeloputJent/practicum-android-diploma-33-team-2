@@ -175,7 +175,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_gravity="end|center_vertical"
             android:scaleType="center"
-            app:srcCompat="@drawable/pic_no_internet_328dp"/>
+            app:srcCompat="@drawable/no_wifi"/>
         <TextView
             android:layout_width="268dp"
             android:layout_height="wrap_content"
@@ -187,6 +187,41 @@
             app:layout_constraintStart_toStartOf="@id/imageNoInternet"
             android:layout_marginStart="30dp"
             app:layout_constraintEnd_toEndOf="@id/imageNoInternet"
+            android:layout_marginEnd="30dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutServerError"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/frameInput"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        tools:visibility="gone">
+        <ImageView
+            android:id="@+id/imageServerError"
+            android:layout_width="328dp"
+            android:layout_height="223dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="135dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:scaleType="center"
+            app:srcCompat="@drawable/error"/>
+        <TextView
+            android:layout_width="268dp"
+            android:layout_height="wrap_content"
+            android:text="@string/search_server_error"
+            style="@style/Medium_YS_Display_22sp_black"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@id/imageServerError"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/imageServerError"
+            android:layout_marginStart="30dp"
+            app:layout_constraintEnd_toEndOf="@id/imageServerError"
             android:layout_marginEnd="30dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -211,11 +246,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_gravity="end|center_vertical"
             android:scaleType="center"
-            app:srcCompat="@drawable/pic_nothing_found_328dp"/>
+            app:srcCompat="@drawable/no_data"/>
         <TextView
             android:layout_width="268dp"
             android:layout_height="wrap_content"
-            android:text="@string/search_no_list_of_vacancies"
+            android:text="@string/search_no_vacancies"
             style="@style/Medium_YS_Display_22sp_black"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@id/imageNoVacancies"
