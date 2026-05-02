@@ -11,5 +11,5 @@ interface FavoriteVacancyRepository {
 
     suspend fun getVacanciesId(): List<String>
 
-    suspend fun deleteVacancy(favoriteVacancy: VacancyCard)
+    suspend fun deleteVacancyById(vacancyId:String)
 }

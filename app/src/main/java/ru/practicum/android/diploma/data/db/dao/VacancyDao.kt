@@ -18,6 +18,6 @@ interface VacancyDao {
     @Query("SELECT id FROM vacancy_card_table")
     suspend fun getVacanciesId(): List<String>
 
-    @Delete(entity = VacancyCardEntity::class)
-    suspend fun deleteVacancy(vacancyCardEntity: VacancyCardEntity)
+    @Query("DELETE FROM vacancy_card_table WHERE id = :vacancyId")
+    suspend fun deleteVacancyById(vacancyId: String)
 }

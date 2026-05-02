@@ -41,7 +41,7 @@
         tools:layout="@layout/fragment_filter" />
     <fragment
         android:id="@+id/detailFragment"
-        android:name="ru.practicum.android.diploma.ui.detail.DetailFragment"
+        android:name="ru.practicum.android.diploma.ui.details.DetailFragment"
         android:label="Детали вакансии"
         tools:layout="@layout/fragment_vacancy_detail"/>
 </navigation>

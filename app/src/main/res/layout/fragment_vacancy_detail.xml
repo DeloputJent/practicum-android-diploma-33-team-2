@@ -223,7 +223,7 @@
             app:layout_constraintEnd_toEndOf="@id/cardField"
             android:layout_marginEnd="16dp"/>
         <TextView
-            android:id="@+id/text_experience_title"
+            android:id="@+id/textExperienceTitle"
             android:layout_width="0dp"
             android:layout_height="19sp"
             app:layout_constraintTop_toBottomOf="@id/cardField"
@@ -235,7 +235,7 @@
             android:id="@+id/textExperience"
             android:layout_width="0dp"
             android:layout_height="19sp"
-            app:layout_constraintTop_toBottomOf="@id/text_experience_title"
+            app:layout_constraintTop_toBottomOf="@id/textExperienceTitle"
             app:layout_constraintStart_toStartOf="parent"
             style="@style/Regular_YS_Display_16sp_black"
             tools:text="От 1 года до 3 лет"/>
@@ -249,7 +249,7 @@
             style="@style/Regular_YS_Display_16sp_black"
             tools:text="Полная занятость, Удаленная работа"/>
         <TextView
-            android:id="@+id/text_contacts_title"
+            android:id="@+id/textContactsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/textSchedule"
@@ -261,12 +261,12 @@
             android:id="@+id/textContactsName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/text_contacts_title"
+            app:layout_constraintTop_toBottomOf="@id/textContactsTitle"
             app:layout_constraintStart_toStartOf="parent"
             style="@style/Regular_YS_Display_16sp_black"
             tools:text="Смирнов Алексей Иванович"/>
         <TextView
-            android:id="@+id/text_email_title"
+            android:id="@+id/textEmailTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/textContactsName"
@@ -278,12 +278,12 @@
             android:id="@+id/textContactsEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/text_email_title"
+            app:layout_constraintTop_toBottomOf="@id/textEmailTitle"
             app:layout_constraintStart_toStartOf="parent"
             style="@style/Regular_YS_Display_16sp_black"
             tools:text="123@gmail.com"/>
         <TextView
-            android:id="@+id/text_phones_title"
+            android:id="@+id/textPhonesTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/textContactsEmail"
@@ -295,7 +295,7 @@
             android:id="@+id/textPhones"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/text_phones_title"
+            app:layout_constraintTop_toBottomOf="@id/textPhonesTitle"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_weight="1"
             android:backgroundTint="@color/HH_White"

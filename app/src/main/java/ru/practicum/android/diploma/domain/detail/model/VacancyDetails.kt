@@ -11,10 +11,11 @@ data class VacancyDetails(
     val employment: String?,
     val contactsName: String?,
     val contactsEmail: String?,
-    val phones: List<Phone>,
+    val phones: List<Phone>?,
     val employerName: String,
     val employerLogo: String,
-    val skills: String,
+    val areaName:String,
+    val skills: String?,
     val url: String,
     val industryName: String,
 ) {
