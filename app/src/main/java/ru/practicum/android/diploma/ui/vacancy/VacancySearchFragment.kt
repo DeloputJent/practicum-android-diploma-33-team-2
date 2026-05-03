@@ -33,6 +33,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         val progress = view.findViewById<View>(R.id.progressBar)
         val noInternet = view.findViewById<View>(R.id.layoutNoInternet)
         val noVacancies = view.findViewById<View>(R.id.layoutNoVacancies)
+        val serverError = view.findViewById<View>(R.id.layoutServerError)
 
         recycler.adapter = vacancyAdapter
 
@@ -55,6 +56,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
                             blank.visibility = View.VISIBLE
                             noInternet.visibility = View.GONE
                             noVacancies.visibility = View.GONE
+                            serverError.visibility = View.GONE
                         }
                         VacancySearchUiState.Loading -> {
                             progress.visibility = View.VISIBLE
@@ -63,6 +65,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
                             blank.visibility = View.GONE
                             noInternet.visibility = View.GONE
                             noVacancies.visibility = View.GONE
+                            serverError.visibility = View.GONE
                         }
                         is VacancySearchUiState.Content -> {
                             progress.visibility = View.GONE
@@ -71,12 +74,41 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
                             blank.visibility = View.GONE
                             noInternet.visibility = View.GONE
                             noVacancies.visibility = View.GONE
+                            serverError.visibility = View.GONE
                             amountText.text = resources.getQuantityString(
                                 R.plurals.search_founded_n_vacancies,
                                 state.found,
                                 state.found
                             )
                             vacancyAdapter.submitList(state.items)
+                        }
+                        VacancySearchUiState.Empty -> {
+                            progress.visibility = View.GONE
+                            amountText.visibility = View.VISIBLE
+                            amountText.setText(R.string.search_no_vacancies)
+                            recycler.visibility = View.GONE
+                            blank.visibility = View.GONE
+                            noInternet.visibility = View.GONE
+                            noVacancies.visibility = View.VISIBLE
+                            serverError.visibility = View.GONE
+                        }
+                        VacancySearchUiState.NoInternet -> {
+                            progress.visibility = View.GONE
+                            amountText.visibility = View.GONE
+                            recycler.visibility = View.GONE
+                            blank.visibility = View.GONE
+                            noInternet.visibility = View.VISIBLE
+                            noVacancies.visibility = View.GONE
+                            serverError.visibility = View.GONE
+                        }
+                        VacancySearchUiState.ServerError -> {
+                            progress.visibility = View.GONE
+                            amountText.visibility = View.GONE
+                            recycler.visibility = View.GONE
+                            blank.visibility = View.GONE
+                            noInternet.visibility = View.GONE
+                            noVacancies.visibility = View.GONE
+                            serverError.visibility = View.VISIBLE
                         }
                     }
                 }

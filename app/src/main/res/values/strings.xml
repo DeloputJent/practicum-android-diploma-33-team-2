@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Practicum-Android-Diploma</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--строки экрана вакансия "Поиск вакансий" (search)-->
     <string name="search_search_of_vacancy">Поиск вакансий</string>

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.search.api.SearchInteractor
+import ru.practicum.android.diploma.util.ErrorKind
 import ru.practicum.android.diploma.util.Resource
 
 class VacancySearchViewModel(
@@ -47,14 +48,18 @@ class VacancySearchViewModel(
                         is Resource.Success -> {
                             val data = result.data
                             if (data == null || data.items.isEmpty()) {
-                                _state.value = VacancySearchUiState.Initial
+                                _state.value = VacancySearchUiState.Empty
                             } else {
                                 _state.value = VacancySearchUiState.Content(data.found, data.items)
                             }
                         }
-                        is Resource.Error, Resource.Loading -> {
-                            _state.value = VacancySearchUiState.Initial
+                        is Resource.Error -> {
+                            _state.value = when (result.kind) {
+                                ErrorKind.NO_INTERNET -> VacancySearchUiState.NoInternet
+                                ErrorKind.SERVER -> VacancySearchUiState.ServerError
+                            }
                         }
+                        Resource.Loading -> Unit
                     }
                 }
         }
