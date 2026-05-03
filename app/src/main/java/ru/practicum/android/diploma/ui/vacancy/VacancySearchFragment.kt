@@ -10,7 +10,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<View>(R.id.filterButton).setOnClickListener {
+        view.findViewById<View>(R.id.buttonFilter).setOnClickListener {
             findNavController().navigate(R.id.action_vacancySearchFragment_to_filterFragment)
         }
     }
