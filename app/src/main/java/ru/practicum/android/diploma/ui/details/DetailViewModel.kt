@@ -4,44 +4,87 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.db.api.FavoriteVacancyInteractor
+import ru.practicum.android.diploma.domain.detail.api.SharingInteractor
+import ru.practicum.android.diploma.domain.detail.api.VacancyDetailInteractor
 import ru.practicum.android.diploma.domain.detail.model.VacancyDetails
 import ru.practicum.android.diploma.domain.favorites.models.VacancyCard
-import ru.practicum.android.diploma.ui.vacancy.VacancySearchUiState
+import ru.practicum.android.diploma.util.Resource
 
-class DetailViewModel(private val vacancyId:String,
-                      private val favoriteInteractor: FavoriteVacancyInteractor
-    ): ViewModel() {
-    var isTrackFavorite : Boolean=false
-    private val playerStateLiveData = MutableLiveData<VacancySearchUiState>(
-        VacancySearchUiState.Loading
-    )
-
-    fun observePlayerState() : LiveData<VacancySearchUiState> = playerStateLiveData
-
+class DetailViewModel(
+    private val vacancyId: String,
+    private val favoriteInteractor: FavoriteVacancyInteractor,
+    private val detailsInteractor: VacancyDetailInteractor,
+    private val sharingInteractor: SharingInteractor
+) : ViewModel() {
+    private var currentVacancy: VacancyDetails? = null
     fun checkIsVacancyFavorite() {
         viewModelScope.launch {
-            isTrackFavoriteLiveData.value=favoriteInteractor.getVacanciesId().contains(vacancyId)
+            isVacancyFavoriteLiveData.postValue(favoriteInteractor.getVacanciesId().contains(vacancyId))
         }
     }
 
-    private val isTrackFavoriteLiveData = MutableLiveData<Boolean>(
-        isTrackFavorite
-    )
+    fun observeFavoriteState(): LiveData<Boolean> = isVacancyFavoriteLiveData
+
+    private val isVacancyFavoriteLiveData = MutableLiveData<Boolean>(false)
+
+    private val _state = MutableStateFlow<VacancyDetailsScreenState>(VacancyDetailsScreenState.Loading)
+    val state: StateFlow<VacancyDetailsScreenState> = _state.asStateFlow()
+
+    init {
+        observeQuery(vacancyId)
+    }
+
+    private fun observeQuery(vacancyId: String) {
+        viewModelScope.launch {
+            _state.value = VacancyDetailsScreenState.Loading
+            when (val result = detailsInteractor.getVacancyDetail(vacancyId)) {
+                is Resource.Success -> {
+                    val data = result.data
+                    if (data == null) {
+                        _state.value = VacancyDetailsScreenState.ServerError
+                    } else {
+                        currentVacancy = data.vacancy
+                        _state.value = VacancyDetailsScreenState.Content(data.vacancy)
+                    }
+                }
+                is Resource.Loading -> {
+                    _state.value = VacancyDetailsScreenState.Loading
+                }
+                is Resource.Error -> {
+                    _state.value = VacancyDetailsScreenState.ServerError
+                }
+            }
+        }
+    }
+
+    fun shareVacancy() {
+        sharingInteractor.shareVacancy(currentVacancy!!.url)
+    }
+    fun contactByMail() {
+        sharingInteractor.sendMail(currentVacancy!!.contactsEmail!!)
+    }
+
+    fun callContactPhone(num: String) {
+        sharingInteractor.makeCall(num)
+    }
 
     fun onFavoriteClicked() {
-        isTrackFavorite = isTrackFavoriteLiveData.value?:false
-        if (isTrackFavorite) {
-            isTrackFavoriteLiveData.value=false
-            viewModelScope.launch {
+        val isFavorite = isVacancyFavoriteLiveData.value ?: false
+        isVacancyFavoriteLiveData.value = !isFavorite
+        viewModelScope.launch {
+            if (isFavorite) {
                 favoriteInteractor.deleteVacancyById(vacancyId)
-            }
-        } else {
-            isTrackFavoriteLiveData.value=true
-            isTrackFavorite = isTrackFavoriteLiveData.value?:false
-            viewModelScope.launch {
-                favoriteInteractor.insertVacancy(convertToVacancyCard(currentVacancy))
+            } else {
+                currentVacancy?.let { vacancy ->
+                    favoriteInteractor.insertVacancy(
+                        convertToVacancyCard(vacancy)
+                    )
+                }
             }
         }
     }

@@ -48,6 +48,8 @@
     <string name="vacancy_contacts_phones">Контактный телефон:</string>
     <string name="vacancy_contacts_num">Требуемый опыт</string>
     <string name="vacancy_skills">Ключевые навыки</string>
+    <string name="vacancy_email_title">Ссылка на вакансию</string>
+    <string name="vacancy_share_with_help">Поделиться с помощью</string>
     <!--строки экрана Избранное(favourites)-->
     <string name="favourites_favourites">Избранное</string>
     <string name="favourites_the_list_is_empty">Список пуст</string>

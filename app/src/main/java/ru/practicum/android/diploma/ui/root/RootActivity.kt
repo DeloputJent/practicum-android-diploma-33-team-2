@@ -3,7 +3,6 @@ package ru.practicum.android.diploma.ui.root
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController

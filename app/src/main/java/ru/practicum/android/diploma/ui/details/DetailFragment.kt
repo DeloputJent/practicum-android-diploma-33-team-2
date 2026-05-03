@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.ui.details
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,24 +8,26 @@ import androidx.core.os.bundleOf
 import androidx.core.text.HtmlCompat
 import androidx.core.util.TypedValueCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.practicum.playlistmaker.search.ui.presentation.PhoneListAdapter
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentVacancyDetailBinding
-import ru.practicum.android.diploma.domain.detail.VacancyDetailsScreenState
 import ru.practicum.android.diploma.domain.detail.model.VacancyDetails
-import androidx.core.net.toUri
-
+import ru.practicum.android.diploma.presentation.details.PhoneListAdapter
 
 class DetailFragment : Fragment() {
-    private val viewModel: DetailViewModel by viewModel()
+    private lateinit var viewModel: DetailViewModel
     private var _binding: FragmentVacancyDetailBinding? = null
     private val binding get() = _binding!!
-    private lateinit var phoneListAdapter : PhoneListAdapter
+    private lateinit var phoneListAdapter: PhoneListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentVacancyDetailBinding.inflate(inflater, container, false)
@@ -38,19 +39,21 @@ class DetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val vacancyId = requireArguments().getInt(VACANCY_ID_KEY)
+
+        viewModel = getViewModel(parameters = { parametersOf(vacancyId) })
+
+        viewModel.checkIsVacancyFavorite()
         val recyclerView = binding.textPhones
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        phoneListAdapter = PhoneListAdapter(clickListener = { phone ->
-            Intent(Intent.ACTION_DIAL).apply {
-                data = ("tel:" + phone.formatted).toUri()
+        phoneListAdapter = PhoneListAdapter(
+            clickListener = {
+                    phone -> viewModel.callContactPhone(phone.formatted)
             }
-        }        )
+        )
 
         binding.textContactsEmail.setOnClickListener {
-            Intent(Intent.ACTION_SENDTO).apply {
-                data = ("mailto:" + binding.textContactsEmail.text).toUri()
-            }
+            viewModel.contactByMail()
         }
 
         recyclerView.adapter = phoneListAdapter
@@ -59,18 +62,33 @@ class DetailFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        binding.buttonShareVacancy.setOnClickListener {        }
+        binding.buttonShareVacancy.setOnClickListener { viewModel.shareVacancy() }
 
-        binding.buttonAddToFavorite.setOnClickListener {  }
+        binding.buttonAddToFavorite.setOnClickListener { viewModel.onFavoriteClicked() }
 
+        viewModel.observeFavoriteState().observe(viewLifecycleOwner) {
+            setFavoriteButton(it)
+        }
 
-        fun render(state: VacancyDetailsScreenState) {
-            when (state) {
-                is VacancyDetailsScreenState.Loading -> showLoading()
-                //is VacancyDetailsScreenState.Content -> showVacancy(vacancy)
-                is VacancyDetailsScreenState.ServerError -> showServerDidNotRespond()
-                is VacancyDetailsScreenState.NothingFound -> showNothingFoundMessage()
-                else -> {showLoading()}
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    when (state) {
+                        VacancyDetailsScreenState.Loading -> {
+                            showLoading()
+                        }
+                        is VacancyDetailsScreenState.Content -> {
+                            showVacancy(state.vacancy)
+                            viewModel.checkIsVacancyFavorite()
+                        }
+                        is VacancyDetailsScreenState.ServerError -> {
+                            showServerDidNotRespond()
+                        }
+                        is VacancyDetailsScreenState.NothingFound -> {
+                            showNothingFoundMessage()
+                        }
+                    }
+                }
             }
         }
     }
@@ -86,35 +104,39 @@ class DetailFragment : Fragment() {
         }
     }
     fun showVacancy(vacancy: VacancyDetails) {
-
         binding.apply {
-            textVacancyName.text=vacancy.name
-            if (!vacancy.salary.isNullOrEmpty()) textSalary.text=vacancy.salary
-            else textSalary.visibility = View.GONE
+            textVacancyName.text = vacancy.name
+            if (!vacancy.salary.isNullOrEmpty()) {
+                textSalary.text = vacancy.salary
+            } else {
+                textSalary.visibility = View.GONE
+            }
 
             setCompanyInfo(vacancy)
 
-            if (!vacancy.experience.isNullOrEmpty()) textExperience.text=vacancy.experience
-            else {
+            if (!vacancy.experience.isNullOrEmpty()) {
+                textExperience.text = vacancy.experience
+            } else {
                 textExperienceTitle.visibility = View.GONE
                 textExperience.visibility = View.GONE
             }
-            if (!vacancy.schedule.isNullOrEmpty()) textSchedule.text=vacancy.schedule
-            else textSchedule.visibility = View.GONE
+            if (!vacancy.scheduleAndEmployment.isNullOrEmpty()) {
+                textEmploymentAndSchedule.text = vacancy.scheduleAndEmployment
+            } else {
+                textEmploymentAndSchedule.visibility = View.GONE
+            }
             setEmployerContacts(vacancy)
-            textDescription.text=HtmlCompat.fromHtml(
-                vacancy.description  ?: "",
-            HtmlCompat.FROM_HTML_MODE_LEGACY
+            textDescription.text = HtmlCompat.fromHtml(
+                vacancy.description ?: "",
+                HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            if (!vacancy.skills.isNullOrEmpty()) textSkills.text=vacancy.skills
-            else {
+            if (!vacancy.skills.isNullOrEmpty()) {
+                textSkills.text = vacancy.skills
+            } else {
                 textSkills.visibility = View.GONE
                 textSkillsTitle.visibility = View.GONE
             }
         }
-
-
-
         binding.apply {
             progressBar.visibility = View.VISIBLE
             layoutVacancyDetail.visibility = View.GONE
@@ -127,16 +149,21 @@ class DetailFragment : Fragment() {
 
     private fun setCompanyInfo(vacancy: VacancyDetails) {
         binding.apply {
-            textEmployerName.text=vacancy.employerName
-            if (!vacancy.address.isNullOrEmpty()) textAddress.text=vacancy.address
-            else textAddress.text = vacancy.areaName
+            textEmployerName.text = vacancy.employerName
+            if (!vacancy.address.isNullOrEmpty()) {
+                textAddress.text = vacancy.address
+            } else {
+                textAddress.text = vacancy.areaName
+            }
             Glide.with(requireContext())
                 .load(vacancy.employerLogo)
                 .centerCrop()
                 .transform(
                     RoundedCorners(
                         TypedValueCompat.dpToPx(
-                            12f, requireContext().resources.displayMetrics)
+                            12f,
+                            requireContext().resources.displayMetrics
+                        )
                             .toInt()
                     )
                 )
@@ -147,7 +174,7 @@ class DetailFragment : Fragment() {
     private fun setEmployerContacts(vacancy: VacancyDetails) {
         binding.apply {
             if (
-                vacancy.contactsName.isNullOrEmpty() and vacancy.contactsEmail.isNullOrEmpty() and vacancy.phones.isNullOrEmpty()
+                (vacancy.contactsName.isNullOrEmpty()) and (vacancy.contactsEmail.isNullOrEmpty()) and (vacancy.phones.isNullOrEmpty())
             ) {
                 textContactsTitle.visibility = View.GONE
                 textContactsName.visibility = View.GONE
@@ -156,15 +183,20 @@ class DetailFragment : Fragment() {
                 textPhones.visibility = View.GONE
                 textPhonesTitle.visibility = View.GONE
             } else {
-                if (!vacancy.contactsName.isNullOrEmpty()) textContactsName.text=vacancy.contactsName
-                else textContactsName.visibility = View.GONE
-                if (!vacancy.contactsEmail.isNullOrEmpty()) textContactsEmail.text=vacancy.contactsEmail
-                else {
+                if (!vacancy.contactsName.isNullOrEmpty()) {
+                    textContactsName.text = vacancy.contactsName
+                } else {
+                    textContactsName.visibility = View.GONE
+                }
+                if (!vacancy.contactsEmail.isNullOrEmpty()) {
+                    textContactsEmail.text = vacancy.contactsEmail
+                } else {
                     textContactsEmail.visibility = View.GONE
                     textEmailTitle.visibility = View.GONE
                 }
-                if (!vacancy.phones.isNullOrEmpty()) phoneListAdapter.setPhonesList(vacancy.phones)
-                else {
+                if (!vacancy.phones.isNullOrEmpty()) {
+                    phoneListAdapter.setPhonesList(vacancy.phones)
+                } else {
                     textPhones.visibility = View.GONE
                     textPhonesTitle.visibility = View.GONE
                 }
@@ -176,7 +208,7 @@ class DetailFragment : Fragment() {
             progressBar.visibility = View.GONE
             layoutVacancyDetail.visibility = View.GONE
             layoutNoVacancy.visibility = View.GONE
-            layoutServerDidntRespond.visibility =  View.VISIBLE
+            layoutServerDidntRespond.visibility = View.VISIBLE
             buttonShareVacancy.visibility = View.GONE
             buttonAddToFavorite.visibility = View.GONE
         }
@@ -186,9 +218,17 @@ class DetailFragment : Fragment() {
             progressBar.visibility = View.GONE
             layoutVacancyDetail.visibility = View.GONE
             layoutNoVacancy.visibility = View.VISIBLE
-            layoutServerDidntRespond.visibility =  View.GONE
+            layoutServerDidntRespond.visibility = View.GONE
             buttonShareVacancy.visibility = View.GONE
             buttonAddToFavorite.visibility = View.GONE
+        }
+    }
+
+    private fun setFavoriteButton(isTrackFavorite: Boolean) {
+        if (isTrackFavorite) {
+            binding.buttonAddToFavorite.setImageResource(R.drawable.ic_favorites_on_24dp)
+        } else {
+            binding.buttonAddToFavorite.setImageResource(R.drawable.ic_favorites_off__24dp)
         }
     }
 
@@ -197,7 +237,7 @@ class DetailFragment : Fragment() {
         _binding = null
     }
 
-    companion object{
+    companion object {
         private const val VACANCY_ID_KEY = "current_vacancy"
 
         fun createArgs(vacancyId: Int): Bundle =
@@ -205,5 +245,4 @@ class DetailFragment : Fragment() {
                 VACANCY_ID_KEY to vacancyId,
             )
     }
-
 }

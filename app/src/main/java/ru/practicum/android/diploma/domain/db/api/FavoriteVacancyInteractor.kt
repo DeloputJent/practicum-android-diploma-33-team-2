@@ -10,5 +10,5 @@ interface FavoriteVacancyInteractor {
 
     suspend fun getVacanciesId(): List<String>
 
-    suspend fun deleteVacancyById(vacancyId : String)
+    suspend fun deleteVacancyById(vacancyId: String)
 }

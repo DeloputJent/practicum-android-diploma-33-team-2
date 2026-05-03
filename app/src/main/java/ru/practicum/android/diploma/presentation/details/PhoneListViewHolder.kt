@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.ui.presentation
+package ru.practicum.android.diploma.presentation.details
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,15 +7,18 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.practicum.android.diploma.databinding.PhoneFrameViewBinding
 import ru.practicum.android.diploma.domain.detail.model.VacancyDetails
 
-class PhoneListViewHolder (
+class PhoneListViewHolder(
     private val binding: PhoneFrameViewBinding
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(phone: VacancyDetails.Phone) {
         binding.apply {
-            if (phone.comment!=null) textPhoneComment.text=phone.comment
-            else textPhoneComment.visibility = View.GONE
-            textPhoneNum.text=phone.formatted
+            if (phone.comment != null) {
+                textPhoneComment.text = phone.comment
+            } else {
+                textPhoneComment.visibility = View.GONE
+            }
+            textPhoneNum.text = phone.formatted
         }
     }
 

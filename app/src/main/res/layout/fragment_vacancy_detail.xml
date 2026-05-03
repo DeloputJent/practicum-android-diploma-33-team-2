@@ -240,8 +240,8 @@
             style="@style/Regular_YS_Display_16sp_black"
             tools:text="От 1 года до 3 лет"/>
         <TextView
-            android:id="@+id/textSchedule"
-            android:layout_width="0dp"
+            android:id="@+id/textEmploymentAndSchedule"
+            android:layout_width="wrap_content"
             android:layout_height="19sp"
             app:layout_constraintTop_toBottomOf="@id/textExperience"
             android:layout_marginTop="8dp"
@@ -252,7 +252,7 @@
             android:id="@+id/textContactsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/textSchedule"
+            app:layout_constraintTop_toBottomOf="@id/textEmploymentAndSchedule"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             style="@style/Medium_YS_Display_16sp_black"
