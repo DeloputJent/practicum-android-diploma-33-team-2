@@ -175,7 +175,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_gravity="end|center_vertical"
             android:scaleType="center"
-            app:srcCompat="@drawable/no_wifi"/>
+            app:srcCompat="@drawable/pic_no_internet_328dp"/>
         <TextView
             android:layout_width="268dp"
             android:layout_height="wrap_content"
@@ -210,7 +210,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:scaleType="center"
-            app:srcCompat="@drawable/error"/>
+            app:srcCompat="@drawable/pic_search_server_didint_respond_328dp"/>
         <TextView
             android:layout_width="268dp"
             android:layout_height="wrap_content"
@@ -246,11 +246,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_gravity="end|center_vertical"
             android:scaleType="center"
-            app:srcCompat="@drawable/no_data"/>
+            app:srcCompat="@drawable/pic_nothing_found_328dp"/>
         <TextView
             android:layout_width="268dp"
             android:layout_height="wrap_content"
-            android:text="@string/search_no_vacancies"
+            android:text="@string/search_no_list_of_vacancies"
             style="@style/Medium_YS_Display_22sp_black"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@id/imageNoVacancies"
