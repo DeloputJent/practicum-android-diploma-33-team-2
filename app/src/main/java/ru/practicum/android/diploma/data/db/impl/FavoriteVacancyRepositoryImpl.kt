@@ -27,8 +27,8 @@ class FavoriteVacancyRepositoryImpl(
         return vacancyBase.getVacancyDao().getVacanciesId()
     }
 
-    override suspend fun deleteVacancy(favoriteVacancy: VacancyCard) {
-        vacancyBase.getVacancyDao().deleteVacancy(convertFromVacancyCard(favoriteVacancy))
+    override suspend fun deleteVacancyById(vacancyId: String) {
+        vacancyBase.getVacancyDao().deleteVacancyById(vacancyId)
     }
 
     private fun convertFromVacancyCardEntityList(vacancyCardLists: List<VacancyCardEntity>): List<VacancyCard> {

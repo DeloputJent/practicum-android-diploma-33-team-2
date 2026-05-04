@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.ui.root
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -29,6 +30,17 @@ class RootActivity : AppCompatActivity() {
         val navHost = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
         val navController = navHost.navController
         binding.bottomNavigationView.setupWithNavController(navHost.navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.detailFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
+                else -> {
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
+            }
+        }
+
     }
 
 }
