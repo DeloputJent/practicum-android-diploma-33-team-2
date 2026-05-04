@@ -104,46 +104,23 @@ class DetailFragment : Fragment() {
         }
     }
     fun showVacancy(vacancy: VacancyDetails) {
-        binding.apply {
-            textVacancyName.text = vacancy.name
-            if (!vacancy.salary.isNullOrEmpty()) {
-                textSalary.text = vacancy.salary
-            } else {
-                textSalary.visibility = View.GONE
-            }
+        setVacancyNameAndSalary(vacancy)
 
-            setCompanyInfo(vacancy)
+        setEmployersRequirements(vacancy)
 
-            if (!vacancy.experience.isNullOrEmpty()) {
-                textExperience.text = vacancy.experience
-            } else {
-                textExperienceTitle.visibility = View.GONE
-                textExperience.visibility = View.GONE
-            }
-            if (!vacancy.scheduleAndEmployment.isNullOrEmpty()) {
-                textEmploymentAndSchedule.text = vacancy.scheduleAndEmployment
-            } else {
-                textEmploymentAndSchedule.visibility = View.GONE
-            }
-            setEmployerContacts(vacancy)
-            textDescription.text = HtmlCompat.fromHtml(
-                vacancy.description ?: "",
-                HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            if (!vacancy.skills.isNullOrEmpty()) {
-                textSkills.text = vacancy.skills
-            } else {
-                textSkills.visibility = View.GONE
-                textSkillsTitle.visibility = View.GONE
-            }
-        }
+        setCompanyInfo(vacancy)
+
+        setEmployerContacts(vacancy)
+
+        setVacancyDescription(vacancy)
+
         binding.apply {
-            progressBar.visibility = View.VISIBLE
-            layoutVacancyDetail.visibility = View.GONE
+            progressBar.visibility = View.GONE
             layoutNoVacancy.visibility = View.GONE
             layoutServerDidntRespond.visibility = View.GONE
-            buttonShareVacancy.visibility = View.GONE
-            buttonAddToFavorite.visibility = View.GONE
+            layoutVacancyDetail.visibility = View.VISIBLE
+            buttonShareVacancy.visibility = View.VISIBLE
+            buttonAddToFavorite.visibility = View.VISIBLE
         }
     }
 
@@ -161,7 +138,7 @@ class DetailFragment : Fragment() {
                 .transform(
                     RoundedCorners(
                         TypedValueCompat.dpToPx(
-                            12f,
+                            CORNER_RADIUS,
                             requireContext().resources.displayMetrics
                         )
                             .toInt()
@@ -171,10 +148,23 @@ class DetailFragment : Fragment() {
                 .into(binding.imageLogo)
         }
     }
+
+    private fun setVacancyNameAndSalary(vacancy: VacancyDetails) {
+        binding.apply {
+            textVacancyName.text = vacancy.name
+            if (vacancy.salary.isNotEmpty()) {
+                textSalary.text = vacancy.salary
+            } else {
+                textSalary.visibility = View.GONE
+            }
+        }
+    }
     private fun setEmployerContacts(vacancy: VacancyDetails) {
         binding.apply {
             if (
-                (vacancy.contactsName.isNullOrEmpty()) and (vacancy.contactsEmail.isNullOrEmpty()) and (vacancy.phones.isNullOrEmpty())
+                vacancy.contactsName.isNullOrEmpty()
+                and vacancy.contactsEmail.isNullOrEmpty()
+                and vacancy.phones.isNullOrEmpty()
             ) {
                 textContactsTitle.visibility = View.GONE
                 textContactsName.visibility = View.GONE
@@ -203,6 +193,36 @@ class DetailFragment : Fragment() {
             }
         }
     }
+
+    private fun setEmployersRequirements(vacancy: VacancyDetails) {
+        binding.apply {
+            if (!vacancy.experience.isNullOrEmpty()) {
+                textExperience.text = vacancy.experience
+            } else {
+                textExperienceTitle.visibility = View.GONE
+                textExperience.visibility = View.GONE
+            }
+            if (!vacancy.scheduleAndEmployment.isNullOrEmpty()) {
+                textEmploymentAndSchedule.text = vacancy.scheduleAndEmployment
+            } else {
+                textEmploymentAndSchedule.visibility = View.GONE
+            }
+        }
+    }
+    private fun setVacancyDescription(vacancy: VacancyDetails) {
+        binding.apply {
+            textDescription.text = HtmlCompat.fromHtml(
+                vacancy.description,
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            if (!vacancy.skills.isNullOrEmpty()) {
+                textSkills.text = vacancy.skills
+            } else {
+                textSkills.visibility = View.GONE
+                textSkillsTitle.visibility = View.GONE
+            }
+        }
+    }
     fun showServerDidNotRespond() {
         binding.apply {
             progressBar.visibility = View.GONE
@@ -223,7 +243,6 @@ class DetailFragment : Fragment() {
             buttonAddToFavorite.visibility = View.GONE
         }
     }
-
     private fun setFavoriteButton(isTrackFavorite: Boolean) {
         if (isTrackFavorite) {
             binding.buttonAddToFavorite.setImageResource(R.drawable.ic_favorites_on_24dp)
@@ -239,6 +258,7 @@ class DetailFragment : Fragment() {
 
     companion object {
         private const val VACANCY_ID_KEY = "current_vacancy"
+        private const val CORNER_RADIUS = 12f
 
         fun createArgs(vacancyId: Int): Bundle =
             bundleOf(

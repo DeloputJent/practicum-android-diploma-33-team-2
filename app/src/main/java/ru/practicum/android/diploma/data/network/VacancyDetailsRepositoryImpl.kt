@@ -16,28 +16,28 @@ class VacancyDetailsRepositoryImpl(
     private val gson: Gson,
 ) : VacancyDetailRepository {
 
-    override suspend fun getVacancyDetail(vacancyId: String): Resource<VacancyDetailResult> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = api.searchVacancies(
-                    authorization = "Bearer ${BuildConfig.API_ACCESS_TOKEN}",
-                    text = vacancyId
-                )
+    override suspend fun getVacancyDetail(vacancyId: String): Resource<VacancyDetailResult> = withContext(
+        Dispatchers.IO
+    ) {
+        try {
+            val response = api.searchVacancies(
+                authorization = "Bearer ${BuildConfig.API_ACCESS_TOKEN}",
+                text = vacancyId
+            )
 
-                if (!response.isSuccessful) {
-                    return@withContext Resource.Error<VacancyDetailResult>()
-                }
-
-                val json = response.body()?.string()
-                if (json.isNullOrEmpty()) {
-                    return@withContext Resource.Error<VacancyDetailResult>()
-                }
-
-                val dto = gson.fromJson(json, VacancyDetailsResponse::class.java)
-                Resource.Success(converter.map(dto))
-            } catch (_: Exception) {
-                Resource.Error<VacancyDetailResult>()
+            if (!response.isSuccessful) {
+                return@withContext Resource.Error()
             }
+
+            val json = response.body()?.string()
+            if (json.isNullOrEmpty()) {
+                return@withContext Resource.Error()
+            }
+
+            val dto = gson.fromJson(json, VacancyDetailsResponse::class.java)
+            Resource.Success(converter.map(dto))
+        } catch (e: Exception) {
+            Resource.Error()
         }
     }
 }

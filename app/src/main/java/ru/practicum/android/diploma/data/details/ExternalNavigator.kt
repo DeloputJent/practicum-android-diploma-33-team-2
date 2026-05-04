@@ -9,16 +9,16 @@ import ru.practicum.android.diploma.domain.detail.api.IntentProvider
 class ExternalNavigator(private val context: Context) : IntentProvider {
     override fun sendMail(url: String) {
         val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = ("mailto:$url").toUri()
-            flags = (Intent.FLAG_ACTIVITY_NEW_TASK)
+            data = "mailto:$url".toUri()
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(sendIntent)
     }
 
     override fun makeCall(num: String) {
         val callIntent = Intent(Intent.ACTION_DIAL).apply {
-            data = ("tel:$num").toUri()
-            flags = (Intent.FLAG_ACTIVITY_NEW_TASK)
+            data = "tel:$num".toUri()
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(callIntent)
     }
