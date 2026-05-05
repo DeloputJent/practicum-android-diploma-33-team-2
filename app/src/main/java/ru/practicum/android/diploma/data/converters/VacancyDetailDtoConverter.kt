@@ -9,7 +9,7 @@ class VacancyDetailDtoConverter {
 
     fun map(responseDto: VacancyDetailsResponse): VacancyDetailResult {
         return VacancyDetailResult(
-            vacancy = map(responseDto.item)
+            item = map(responseDto.item)
         )
     }
 
@@ -41,7 +41,11 @@ class VacancyDetailDtoConverter {
             var salaryString = ""
             if (salary.from != null) salaryString = "от " + salary.from.toString() + " "
             if (salary.to != null) salaryString = salaryString + "до " + salary.to.toString() + " "
-            if (salary.currency != null) salaryString += convertCurrency(salary.currency)
+            if (salaryString.isNotEmpty()) {
+                if (salary.currency != null) salaryString += convertCurrency(salary.currency)
+            } else {
+                return "Зарплата не указана"
+            }
             return salaryString
         } else {
             return "Зарплата не указана"

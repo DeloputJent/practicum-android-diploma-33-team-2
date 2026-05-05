@@ -2,7 +2,6 @@ package ru.practicum.android.diploma.data.network
 
 import com.google.gson.Gson
 import com.google.gson.JsonIOException
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.practicum.android.diploma.BuildConfig
@@ -12,6 +11,7 @@ import ru.practicum.android.diploma.domain.search.api.SearchRepository
 import ru.practicum.android.diploma.domain.search.models.SearchResult
 import ru.practicum.android.diploma.util.ErrorKind
 import ru.practicum.android.diploma.util.Resource
+import java.io.IOException
 
 class SearchRepositoryImpl(
     private val api: HhApi,

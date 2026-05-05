@@ -13,6 +13,7 @@ import ru.practicum.android.diploma.domain.detail.api.SharingInteractor
 import ru.practicum.android.diploma.domain.detail.api.VacancyDetailInteractor
 import ru.practicum.android.diploma.domain.detail.model.VacancyDetails
 import ru.practicum.android.diploma.domain.favorites.models.VacancyCard
+import ru.practicum.android.diploma.util.ErrorKind
 import ru.practicum.android.diploma.util.Resource
 
 class DetailViewModel(
@@ -46,17 +47,20 @@ class DetailViewModel(
                 is Resource.Success -> {
                     val data = result.data
                     if (data == null) {
-                        _state.value = VacancyDetailsScreenState.ServerError
+                        _state.value = VacancyDetailsScreenState.NothingFound
                     } else {
-                        currentVacancy = data.vacancy
-                        _state.value = VacancyDetailsScreenState.Content(data.vacancy)
+                        currentVacancy = data.item
+                        _state.value = VacancyDetailsScreenState.Content(data.item)
                     }
                 }
                 is Resource.Loading -> {
                     _state.value = VacancyDetailsScreenState.Loading
                 }
                 is Resource.Error -> {
-                    _state.value = VacancyDetailsScreenState.ServerError
+                    _state.value = when (result.kind) {
+                        ErrorKind.NO_INTERNET -> VacancyDetailsScreenState.NothingFound
+                        ErrorKind.SERVER -> VacancyDetailsScreenState.ServerError
+                    }
                 }
             }
         }

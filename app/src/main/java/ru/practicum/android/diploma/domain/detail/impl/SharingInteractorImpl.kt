@@ -15,6 +15,6 @@ class SharingInteractorImpl(
     }
 
     override fun shareVacancy(sharedUrl: String) {
-        externalNavigator
+        externalNavigator.shareVacancy(sharedUrl)
     }
 }

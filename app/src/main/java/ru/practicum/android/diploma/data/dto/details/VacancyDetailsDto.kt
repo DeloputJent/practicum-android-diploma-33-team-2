@@ -1,68 +1,72 @@
 package ru.practicum.android.diploma.data.dto.details
 
+import com.google.gson.annotations.SerializedName
+import java.io.Serializable
+
 data class VacancyDetailsDto(
-    val id: String,
-    val name: String,
-    val description: String,
-    val salary: Salary?,
-    val address: Address?,
-    val experience: Experience?,
-    val schedule: Schedule?,
-    val employment: Employment?,
-    val contacts: Contacts?,
-    val employer: Employer,
-    val area: Area,
-    val skills: List<String>,
-    val url: String,
-    val industry: Industry,
-) {
+    @SerializedName("id") val id: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("salary") val salary: Salary?,
+    @SerializedName("address") val address: Address?,
+    @SerializedName("experience") val experience: Experience?,
+    @SerializedName("schedule") val schedule: Schedule?,
+    @SerializedName("employment") val employment: Employment?,
+    @SerializedName("contacts") val contacts: Contacts?,
+    @SerializedName("description") val description: String,
+    @SerializedName("employer") val employer: Employer,
+    @SerializedName("area") val area: Area,
+    @SerializedName("skills") val skills: List<String>,
+    @SerializedName("url") val url: String,
+    @SerializedName("industry") val industry: Industry,
+) : Serializable {
     data class Salary(
-        val from: Int?,
-        val to: Int?,
-        val currency: String?
-    )
+        @SerializedName("id") val id: String,
+        @SerializedName("currency") val currency: String?,
+        @SerializedName("from") val from: Int?,
+        @SerializedName("to") val to: Int?,
+    ) : Serializable
     data class Address(
-        val id: String,
-        val city: String,
-        val street: String,
-        val building: String,
-        val raw: String
-    )
+        @SerializedName("id") val id: String,
+        @SerializedName("city") val city: String,
+        @SerializedName("street") val street: String,
+        @SerializedName("building") val building: String,
+        @SerializedName("raw") val raw: String
+    ) : Serializable
     data class Experience(
-        val id: String,
-        val name: String
-    )
+        @SerializedName("id") val id: String,
+        @SerializedName("name") val name: String
+    ) : Serializable
     data class Schedule(
-        val id: String,
-        val name: String
-    )
+        @SerializedName("id") val id: String,
+        @SerializedName("name") val name: String
+    ) : Serializable
     data class Employment(
-        val id: String,
-        val name: String
-    )
+        @SerializedName("id") val id: String,
+        @SerializedName("name") val name: String
+    ) : Serializable
     data class Contacts(
-        val id: String,
-        val name: String,
-        val email: String,
-        val phones: List<Phone>
-    )
+        @SerializedName("id") val id: String,
+        @SerializedName("name") val name: String,
+        @SerializedName("email") val email: String,
+        @SerializedName("phones") val phones: List<Phone>
+    ) : Serializable
     data class Phone(
-        val comment: String?,
-        val formatted: String
-    )
+        @SerializedName("comment") val comment: String?,
+        @SerializedName("formatted") val formatted: String
+    ) : Serializable
     data class Employer(
-        val id: String,
-        val name: String,
-        val logo: String
-    )
+        @SerializedName("id") val id: String,
+        @SerializedName("name") val name: String,
+        @SerializedName("logo") val logo: String
+    ) : Serializable
     data class Area(
-        val id: Int,
-        val name: String,
-        val parentId: Int,
-        val areas: List<Area>
-    )
+        @SerializedName("id") val id: Int,
+        @SerializedName("parentId") val parentId: Int,
+        @SerializedName("name") val name: String,
+        @SerializedName("areas") val areas: List<Area>
+    ) : Serializable
     data class Industry(
-        val id: Int,
-        val name: String
-    )
+        @SerializedName("id") val id: Int,
+        @SerializedName("name") val name: String
+    ) : Serializable
 }
