@@ -38,7 +38,8 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val vacancyId = requireArguments().getInt(VACANCY_ID_KEY)
+        val vacancyId = requireArguments().getString(VACANCY_ID_KEY)
+            ?: error("vacancyId argument is required")
 
         viewModel = getViewModel(parameters = { parametersOf(vacancyId) })
 
@@ -257,10 +258,10 @@ class DetailFragment : Fragment() {
     }
 
     companion object {
-        private const val VACANCY_ID_KEY = "current_vacancy"
+        private const val VACANCY_ID_KEY = "vacancyId"
         private const val CORNER_RADIUS = 12f
 
-        fun createArgs(vacancyId: Int): Bundle =
+        fun createArgs(vacancyId: String): Bundle =
             bundleOf(
                 VACANCY_ID_KEY to vacancyId,
             )

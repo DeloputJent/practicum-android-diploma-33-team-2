@@ -15,11 +15,18 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.search.models.VacancyShort
+import ru.practicum.android.diploma.ui.details.DetailFragment
 
 class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
 
     private val viewModel: VacancySearchViewModel by viewModel()
-    private val vacancyAdapter = VacancyAdapter()
+    private val vacancyClickListener = object : VacancyAdapter.VacancyClickListener {
+        override fun onVacancyClick(vacancy: VacancyShort) {
+            openVacancyDetails(vacancy.id)
+        }
+    }
+    private val vacancyAdapter = VacancyAdapter(vacancyClickListener)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -118,6 +125,13 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         buttonFilter.setOnClickListener {
             findNavController().navigate(R.id.action_vacancySearchFragment_to_filterFragment)
         }
+    }
+
+    private fun openVacancyDetails(vacancyId: String) {
+        findNavController().navigate(
+            R.id.action_vacancySearchFragment_to_detailFragment,
+            DetailFragment.createArgs(vacancyId),
+        )
     }
 
     private fun updateInputIcon(

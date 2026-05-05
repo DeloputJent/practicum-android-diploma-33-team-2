@@ -14,7 +14,13 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
-class VacancyAdapter : RecyclerView.Adapter<VacancyAdapter.VacancyViewHolder>() {
+class VacancyAdapter(
+    private val clickListener: VacancyClickListener,
+) : RecyclerView.Adapter<VacancyAdapter.VacancyViewHolder>() {
+
+    fun interface VacancyClickListener {
+        fun onVacancyClick(vacancy: VacancyShort)
+    }
 
     private val items = mutableListOf<VacancyShort>()
 
@@ -27,7 +33,7 @@ class VacancyAdapter : RecyclerView.Adapter<VacancyAdapter.VacancyViewHolder>() 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VacancyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemVacancyBinding.inflate(inflater, parent, false)
-        return VacancyViewHolder(binding)
+        return VacancyViewHolder(binding, clickListener)
     }
 
     override fun onBindViewHolder(holder: VacancyViewHolder, position: Int) {
@@ -38,6 +44,7 @@ class VacancyAdapter : RecyclerView.Adapter<VacancyAdapter.VacancyViewHolder>() 
 
     class VacancyViewHolder(
         private val binding: ItemVacancyBinding,
+        private val clickListener: VacancyClickListener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: VacancyShort) {
@@ -45,6 +52,7 @@ class VacancyAdapter : RecyclerView.Adapter<VacancyAdapter.VacancyViewHolder>() 
             binding.textVacancyName.text = title
             binding.textVacancyCompany.text = item.company.orEmpty()
             binding.textVacancySalary.text = formatSalary(item.salary, binding)
+            binding.root.setOnClickListener { clickListener.onVacancyClick(item) }
 
             loadLogo(item.logo, binding.imageVacancyLogo)
         }
