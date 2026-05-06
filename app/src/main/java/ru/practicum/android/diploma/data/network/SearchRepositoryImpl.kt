@@ -19,12 +19,13 @@ class SearchRepositoryImpl(
     private val gson: Gson,
 ) : SearchRepository {
 
-    override suspend fun searchVacancies(query: String): Resource<SearchResult> {
+    override suspend fun searchVacancies(query: String, page: Int): Resource<SearchResult> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = api.searchVacancies(
                     authorization = "Bearer ${BuildConfig.API_ACCESS_TOKEN}",
-                    text = query
+                    text = query,
+                    page = page,
                 )
 
                 if (!response.isSuccessful) {

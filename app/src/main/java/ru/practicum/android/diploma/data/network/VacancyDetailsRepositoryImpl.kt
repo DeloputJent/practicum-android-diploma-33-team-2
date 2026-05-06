@@ -33,6 +33,15 @@ class VacancyDetailsRepositoryImpl(
                         return@withContext Resource.Error(ErrorKind.NO_INTERNET)
                     }
                 }
+    override suspend fun getVacancyDetail(vacancyId: String): Resource<VacancyDetailResult> = withContext(
+        Dispatchers.IO
+    ) {
+        try {
+            val response = api.searchVacancies(
+                authorization = "Bearer ${BuildConfig.API_ACCESS_TOKEN}",
+                text = vacancyId,
+                page = 0,
+            )
 
                 val json = response.body()?.string()
                 if (json.isNullOrEmpty()) {

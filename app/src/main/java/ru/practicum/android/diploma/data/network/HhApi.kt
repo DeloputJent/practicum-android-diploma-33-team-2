@@ -13,6 +13,7 @@ interface HhApi {
         @Header("Authorization") authorization: String,
         @Header("Content-Type") contentType: String = "application/json",
         @Query("text") text: String,
+        @Query("page") page: Int,
     ): Response<ResponseBody>
 
     @GET("vacancies/{id}")
