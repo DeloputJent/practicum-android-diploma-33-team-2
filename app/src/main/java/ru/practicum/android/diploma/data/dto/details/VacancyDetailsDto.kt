@@ -26,7 +26,7 @@ data class VacancyDetailsDto(
         @SerializedName("to") val to: Int?,
     ) : Serializable {
         companion object {
-            const val serialVersionUID: Long = 20240506L
+            private const val serialVersionUID: Long = 20240506L
         }
     }
     data class Address(
@@ -37,7 +37,7 @@ data class VacancyDetailsDto(
         @SerializedName("raw") val raw: String
     ) : Serializable {
         companion object {
-            const val serialVersionUID: Long = 20240506L
+            private const val serialVersionUID: Long = 20240506L
         }
     }
     data class Experience(
@@ -45,7 +45,7 @@ data class VacancyDetailsDto(
         @SerializedName("name") val name: String
     ) : Serializable {
         companion object {
-            const val serialVersionUID: Long = 20240506L
+            private const val serialVersionUID: Long = 20240506L
         }
     }
     data class Schedule(
@@ -53,7 +53,7 @@ data class VacancyDetailsDto(
         @SerializedName("name") val name: String
     ) : Serializable {
         companion object {
-            const val serialVersionUID: Long = 20240506L
+            private const val serialVersionUID: Long = 20240506L
         }
     }
     data class Employment(
@@ -61,7 +61,7 @@ data class VacancyDetailsDto(
         @SerializedName("name") val name: String
     ) : Serializable {
         companion object {
-            const val serialVersionUID: Long = 20240506L
+            private const val serialVersionUID: Long = 20240506L
         }
     }
     data class Contacts(
@@ -71,7 +71,7 @@ data class VacancyDetailsDto(
         @SerializedName("phones") val phones: List<Phone>
     ) : Serializable {
         companion object {
-            const val serialVersionUID: Long = 20240506L
+            private const val serialVersionUID: Long = 20240506L
         }
     }
     data class Phone(
@@ -79,7 +79,7 @@ data class VacancyDetailsDto(
         @SerializedName("formatted") val formatted: String
     ) : Serializable {
         companion object {
-            const val serialVersionUID: Long = 20240506L
+            private const val serialVersionUID: Long = 20240506L
         }
     }
     data class Employer(
@@ -88,7 +88,7 @@ data class VacancyDetailsDto(
         @SerializedName("logo") val logo: String
     ) : Serializable {
         companion object {
-            const val serialVersionUID: Long = 20240506L
+            private const val serialVersionUID: Long = 20240506L
         }
     }
     data class Area(
@@ -98,7 +98,7 @@ data class VacancyDetailsDto(
         @SerializedName("areas") val areas: List<Area>
     ) : Serializable {
         companion object {
-            const val serialVersionUID: Long = 20240506L
+            private const val serialVersionUID: Long = 20240506L
         }
     }
     data class Industry(
@@ -106,10 +106,10 @@ data class VacancyDetailsDto(
         @SerializedName("name") val name: String
     ) : Serializable {
         companion object {
-            const val serialVersionUID: Long = 20240506L
+            private const val serialVersionUID: Long = 20240506L
         }
     }
     companion object {
-        const val serialVersionUID: Long = 20240506L
+        private const val serialVersionUID: Long = 20240506L
     }
 }
