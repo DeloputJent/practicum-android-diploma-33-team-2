@@ -9,7 +9,7 @@ class VacancyDetailDtoConverter {
 
     fun map(responseDto: VacancyDetailsResponse): VacancyDetailResult {
         return VacancyDetailResult(
-            vacancy = map(responseDto.item)
+            item = map(responseDto.item)
         )
     }
 
@@ -41,22 +41,19 @@ class VacancyDetailDtoConverter {
             var salaryString = ""
             if (salary.from != null) salaryString = "от " + salary.from.toString() + " "
             if (salary.to != null) salaryString = salaryString + "до " + salary.to.toString() + " "
-            if (salary.currency != null) salaryString += convertCurrency(salary.currency)
-            return salaryString
-        } else {
-            return "Зарплата не указана"
+            if (salaryString.isNotEmpty()) {
+                if (salary.currency != null) salaryString += convertCurrency(salary.currency)
+                return salaryString
+            }
         }
+        return "Зарплата не указана"
     }
 
     private fun convertAddress(
         address: VacancyDetailsDto.Address?,
         areaName: VacancyDetailsDto.Area
     ): String {
-        return if (address != null) {
-            address.raw
-        } else {
-            areaName.name
-        }
+        return address?.raw ?: areaName.name
     }
 
     private fun convertToScheduleAndEmployment(
@@ -78,9 +75,9 @@ class VacancyDetailDtoConverter {
         return phones?.map { VacancyDetails.Phone(it.comment, it.formatted) }
     }
     private fun convertSkills(skills: List<String>): String {
-        var resultString = ""
+        var resultString = String()
         skills.forEach { resultString = "$resultString • $it\n" }
-        return resultString
+        return resultString.trim()
     }
     private fun convertCurrency(currency: String): String {
         return when (currency) {

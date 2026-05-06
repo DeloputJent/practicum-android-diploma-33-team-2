@@ -275,7 +275,7 @@
                 app:layout_constraintTop_toBottomOf="@id/textContactsName"
                 android:layout_marginTop="4dp"
                 app:layout_constraintStart_toStartOf="parent"
-                style="@style/Regular_YS_Display_16sp_black"
+                style="@style/Medium_YS_Display_16sp_black"
                 android:text="@string/vacancy_contacts_email"/>
             <TextView
                 android:id="@+id/textContactsEmail"
@@ -292,7 +292,7 @@
                 app:layout_constraintTop_toBottomOf="@id/textContactsEmail"
                 android:layout_marginTop="4dp"
                 app:layout_constraintStart_toStartOf="parent"
-                style="@style/Regular_YS_Display_16sp_black"
+                style="@style/Medium_YS_Display_16sp_black"
                 android:text="@string/vacancy_contacts_phones"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/textPhones"
@@ -321,7 +321,7 @@
                 app:layout_constraintTop_toBottomOf="@id/textDescription"
                 android:layout_marginTop="24dp"
                 app:layout_constraintStart_toStartOf="parent"
-                style="@style/Medium_YS_Display_16sp_black"
+                style="@style/Medium_YS_Display_22sp_black"
                 android:text="@string/vacancy_skills"/>
             <TextView
                 android:id="@+id/textSkills"

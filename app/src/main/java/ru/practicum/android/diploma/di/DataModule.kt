@@ -6,8 +6,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import ru.practicum.android.diploma.data.converters.SearchDtoConverter
-import ru.practicum.android.diploma.data.converters.VacancyDetailDtoConverter
 import ru.practicum.android.diploma.data.converters.VacancyDbConvertor
+import ru.practicum.android.diploma.data.converters.VacancyDetailDtoConverter
 import ru.practicum.android.diploma.data.db.VacancyDatabase
 import ru.practicum.android.diploma.data.network.HhApi
 import ru.practicum.android.diploma.data.network.HhApiConstants

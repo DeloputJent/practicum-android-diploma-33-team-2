@@ -40,7 +40,6 @@ class DetailFragment : Fragment() {
 
         val vacancyId = requireArguments().getString(VACANCY_ID_KEY)
             ?: error("vacancyId argument is required")
-
         viewModel = getViewModel(parameters = { parametersOf(vacancyId) })
 
         viewModel.checkIsVacancyFavorite()

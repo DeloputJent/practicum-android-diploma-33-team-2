@@ -1,0 +1,64 @@
+Index: app/src/main/java/ru/practicum/android/diploma/ui/vacancy/VacancySearchFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ru.practicum.android.diploma.ui.vacancy\r\n\r\nimport android.os.Bundle\r\nimport android.view.View\r\nimport android.widget.EditText\r\nimport android.widget.ImageView\r\nimport android.widget.TextView\r\nimport androidx.core.widget.doOnTextChanged\r\nimport androidx.fragment.app.Fragment\r\nimport androidx.lifecycle.Lifecycle\r\nimport androidx.lifecycle.lifecycleScope\r\nimport androidx.lifecycle.repeatOnLifecycle\r\nimport androidx.navigation.fragment.findNavController\r\nimport androidx.recyclerview.widget.RecyclerView\r\nimport kotlinx.coroutines.launch\r\nimport org.koin.androidx.viewmodel.ext.android.viewModel\r\nimport ru.practicum.android.diploma.R\r\n\r\nclass VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {\r\n\r\n    private val viewModel: VacancySearchViewModel by viewModel()\r\n    private val vacancyAdapter = VacancyAdapter()\r\n\r\n    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {\r\n        super.onViewCreated(view, savedInstanceState)\r\n\r\n        val buttonFilter = view.findViewById<View>(R.id.buttonFilter)\r\n        val editInput = view.findViewById<EditText>(R.id.editInputToSearch)\r\n        val inputIcon = view.findViewById<ImageView>(R.id.imageEditSign)\r\n        val amountText = view.findViewById<TextView>(R.id.textAmountOfFounded)\r\n        val recycler = view.findViewById<RecyclerView>(R.id.recyclerVacancies)\r\n        val blank = view.findViewById<View>(R.id.layoutBlankSearch)\r\n        val progress = view.findViewById<View>(R.id.progressBar)\r\n        val noInternet = view.findViewById<View>(R.id.layoutNoInternet)\r\n        val noVacancies = view.findViewById<View>(R.id.layoutNoVacancies)\r\n\r\n        recycler.adapter = vacancyAdapter\r\n\r\n        editInput.doOnTextChanged { text, _, _, _ ->\r\n            val value = text?.toString().orEmpty()\r\n            viewModel.onQueryChanged(value)\r\n            updateInputIcon(value.isNotBlank(), inputIcon, editInput)\r\n        }\r\n\r\n        updateInputIcon(false, inputIcon, editInput)\r\n\r\n        viewLifecycleOwner.lifecycleScope.launch {\r\n            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {\r\n                viewModel.state.collect { state ->\r\n                    when (state) {\r\n                        VacancySearchUiState.Initial -> {\r\n                            progress.visibility = View.GONE\r\n                            amountText.visibility = View.GONE\r\n                            recycler.visibility = View.GONE\r\n                            blank.visibility = View.VISIBLE\r\n                            noInternet.visibility = View.GONE\r\n                            noVacancies.visibility = View.GONE\r\n                        }\r\n                        VacancySearchUiState.Loading -> {\r\n                            progress.visibility = View.VISIBLE\r\n                            amountText.visibility = View.GONE\r\n                            recycler.visibility = View.GONE\r\n                            blank.visibility = View.GONE\r\n                            noInternet.visibility = View.GONE\r\n                            noVacancies.visibility = View.GONE\r\n                        }\r\n                        is VacancySearchUiState.Content -> {\r\n                            progress.visibility = View.GONE\r\n                            amountText.visibility = View.VISIBLE\r\n                            recycler.visibility = View.VISIBLE\r\n                            blank.visibility = View.GONE\r\n                            noInternet.visibility = View.GONE\r\n                            noVacancies.visibility = View.GONE\r\n                            amountText.text = resources.getQuantityString(\r\n                                R.plurals.search_founded_n_vacancies,\r\n                                state.found,\r\n                                state.found\r\n                            )\r\n                            vacancyAdapter.submitList(state.items)\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n\r\n        buttonFilter.setOnClickListener {\r\n            findNavController().navigate(R.id.action_vacancySearchFragment_to_filterFragment)\r\n        }\r\n    }\r\n\r\n    private fun updateInputIcon(\r\n        hasQuery: Boolean,\r\n        inputIcon: ImageView,\r\n        editInput: EditText,\r\n    ) {\r\n        if (hasQuery) {\r\n            inputIcon.setImageResource(R.drawable.ic_close_24dp)\r\n            inputIcon.setOnClickListener {\r\n                editInput.text?.clear()\r\n                viewModel.onQueryChanged(\"\")\r\n            }\r\n        } else {\r\n            inputIcon.setImageResource(R.drawable.ic_search_24dp)\r\n            inputIcon.setOnClickListener(null)\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/ru/practicum/android/diploma/ui/vacancy/VacancySearchFragment.kt b/app/src/main/java/ru/practicum/android/diploma/ui/vacancy/VacancySearchFragment.kt
+--- a/app/src/main/java/ru/practicum/android/diploma/ui/vacancy/VacancySearchFragment.kt	(revision 5f7947a9c7b22841b8f291a41ade53afe5d44feb)
++++ b/app/src/main/java/ru/practicum/android/diploma/ui/vacancy/VacancySearchFragment.kt	(date 1777993563235)
+@@ -15,11 +15,20 @@
+ import kotlinx.coroutines.launch
+ import org.koin.androidx.viewmodel.ext.android.viewModel
+ import ru.practicum.android.diploma.R
++import ru.practicum.android.diploma.domain.search.models.VacancyShort
++import ru.practicum.android.diploma.ui.details.DetailFragment
+ 
+ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
+ 
+     private val viewModel: VacancySearchViewModel by viewModel()
+-    private val vacancyAdapter = VacancyAdapter()
++    val bundle = Bundle()
++    private val vacancyAdapter = VacancyAdapter(clickListener = { vacancy ->
++        bundle.putParcelable("current_vacancy", vacancy.id)
++        val fragment = DetailFragment
++        findNavController().navigate(
++            R.id.action_playListFragment_to_musicPlayerFragment,
++            MusicPlayerFragment.createArgs(track))
++    })
+ 
+     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+         super.onViewCreated(view, savedInstanceState)
+Index: app/src/main/java/ru/practicum/android/diploma/ui/vacancy/VacancyAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ru.practicum.android.diploma.ui.vacancy\r\n\r\nimport android.view.LayoutInflater\r\nimport android.view.ViewGroup\r\nimport android.widget.ImageView\r\nimport androidx.recyclerview.widget.RecyclerView\r\nimport com.bumptech.glide.Glide\r\nimport com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions\r\nimport ru.practicum.android.diploma.R\r\nimport ru.practicum.android.diploma.databinding.ItemVacancyBinding\r\nimport ru.practicum.android.diploma.domain.search.models.Salary\r\nimport ru.practicum.android.diploma.domain.search.models.VacancyShort\r\nimport java.text.DecimalFormat\r\nimport java.text.DecimalFormatSymbols\r\nimport java.util.Locale\r\n\r\nclass VacancyAdapter : RecyclerView.Adapter<VacancyAdapter.VacancyViewHolder>() {\r\n\r\n    private val items = mutableListOf<VacancyShort>()\r\n\r\n    fun submitList(newItems: List<VacancyShort>) {\r\n        items.clear()\r\n        items.addAll(newItems)\r\n        notifyDataSetChanged()\r\n    }\r\n\r\n    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VacancyViewHolder {\r\n        val inflater = LayoutInflater.from(parent.context)\r\n        val binding = ItemVacancyBinding.inflate(inflater, parent, false)\r\n        return VacancyViewHolder(binding)\r\n    }\r\n\r\n    override fun onBindViewHolder(holder: VacancyViewHolder, position: Int) {\r\n        holder.bind(items[position])\r\n    }\r\n\r\n    override fun getItemCount(): Int = items.size\r\n\r\n    class VacancyViewHolder(\r\n        private val binding: ItemVacancyBinding,\r\n    ) : RecyclerView.ViewHolder(binding.root) {\r\n\r\n        fun bind(item: VacancyShort) {\r\n            val title = if (item.city.isNullOrBlank()) item.name else \"${item.name}, ${item.city}\"\r\n            binding.textVacancyName.text = title\r\n            binding.textVacancyCompany.text = item.company.orEmpty()\r\n            binding.textVacancySalary.text = formatSalary(item.salary, binding)\r\n\r\n            loadLogo(item.logo, binding.imageVacancyLogo)\r\n        }\r\n\r\n        private fun loadLogo(rawUrl: String?, imageView: ImageView) {\r\n            val logoUrl = normalizeLogoUrl(rawUrl)\r\n            Glide.with(binding.imageVacancyLogo)\r\n                .load(logoUrl)\r\n                .placeholder(android.R.color.transparent)\r\n                .error(android.R.color.transparent)\r\n                .fallback(android.R.color.transparent)\r\n                .transition(DrawableTransitionOptions.withCrossFade())\r\n                .into(imageView)\r\n        }\r\n\r\n        private fun formatSalary(salary: Salary?, binding: ItemVacancyBinding): String {\r\n            if (salary == null) {\r\n                return binding.root.context.getString(R.string.search_salary_not_specified)\r\n            }\r\n            val from = salary.from\r\n            val to = salary.to\r\n            val currency = salary.currency?.takeIf { it.isNotBlank() }?.let { \" $it\" }.orEmpty()\r\n            return when {\r\n                from != null && to != null -> \"от ${formatNumber(from)} до ${formatNumber(to)}$currency\"\r\n                from != null -> \"от ${formatNumber(from)}$currency\"\r\n                to != null -> \"до ${formatNumber(to)}$currency\"\r\n                else -> binding.root.context.getString(R.string.search_salary_not_specified)\r\n            }\r\n        }\r\n\r\n        private fun formatNumber(value: Int): String {\r\n            val symbols = DecimalFormatSymbols(Locale(\"ru\", \"RU\"))\r\n            return DecimalFormat(\"#,###\", symbols).format(value).replace(\",\", \" \")\r\n        }\r\n\r\n        private fun normalizeLogoUrl(url: String?): String? {\r\n            if (url.isNullOrBlank()) return null\r\n            return if (url.startsWith(\"//\")) \"https:$url\" else url\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/ru/practicum/android/diploma/ui/vacancy/VacancyAdapter.kt b/app/src/main/java/ru/practicum/android/diploma/ui/vacancy/VacancyAdapter.kt
+--- a/app/src/main/java/ru/practicum/android/diploma/ui/vacancy/VacancyAdapter.kt	(revision 5f7947a9c7b22841b8f291a41ade53afe5d44feb)
++++ b/app/src/main/java/ru/practicum/android/diploma/ui/vacancy/VacancyAdapter.kt	(date 1777993093318)
+@@ -14,7 +14,10 @@
+ import java.text.DecimalFormatSymbols
+ import java.util.Locale
+ 
+-class VacancyAdapter : RecyclerView.Adapter<VacancyAdapter.VacancyViewHolder>() {
++class VacancyAdapter(
++    val clickListener: (VacancyShort) -> Unit={}
++) : RecyclerView.Adapter<VacancyAdapter.VacancyViewHolder>() {
++
+ 
+     private val items = mutableListOf<VacancyShort>()
+ 
+@@ -32,6 +35,9 @@
+ 
+     override fun onBindViewHolder(holder: VacancyViewHolder, position: Int) {
+         holder.bind(items[position])
++        holder.itemView.setOnClickListener{
++            clickListener(items[position])
++        }
+     }
+ 
+     override fun getItemCount(): Int = items.size
