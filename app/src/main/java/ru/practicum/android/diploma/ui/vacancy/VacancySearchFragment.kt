@@ -5,12 +5,14 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,6 +45,21 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         val serverError = view.findViewById<View>(R.id.layoutServerError)
 
         recycler.adapter = vacancyAdapter
+        recycler.layoutManager = LinearLayoutManager(requireContext())
+
+        recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val pos = layoutManager.findLastVisibleItemPosition()
+                    val itemsCount = vacancyAdapter.itemCount
+                    if (pos >= itemsCount - 1) {
+                        viewModel.onLastItemReached()
+                    }
+                }
+            }
+        })
 
         editInput.doOnTextChanged { text, _, _, _ ->
             val value = text?.toString().orEmpty()
@@ -64,6 +81,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
                             noInternet.visibility = View.GONE
                             noVacancies.visibility = View.GONE
                             serverError.visibility = View.GONE
+                            vacancyAdapter.showLoading(false)
                         }
                         VacancySearchUiState.Loading -> {
                             progress.visibility = View.VISIBLE
@@ -73,6 +91,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
                             noInternet.visibility = View.GONE
                             noVacancies.visibility = View.GONE
                             serverError.visibility = View.GONE
+                            vacancyAdapter.showLoading(false)
                         }
                         is VacancySearchUiState.Content -> {
                             progress.visibility = View.GONE
@@ -98,6 +117,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
                             noInternet.visibility = View.GONE
                             noVacancies.visibility = View.VISIBLE
                             serverError.visibility = View.GONE
+                            vacancyAdapter.showLoading(false)
                         }
                         VacancySearchUiState.NoInternet -> {
                             progress.visibility = View.GONE
@@ -107,6 +127,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
                             noInternet.visibility = View.VISIBLE
                             noVacancies.visibility = View.GONE
                             serverError.visibility = View.GONE
+                            vacancyAdapter.showLoading(false)
                         }
                         VacancySearchUiState.ServerError -> {
                             progress.visibility = View.GONE
@@ -116,8 +137,25 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
                             noInternet.visibility = View.GONE
                             noVacancies.visibility = View.GONE
                             serverError.visibility = View.VISIBLE
+                            vacancyAdapter.showLoading(false)
                         }
                     }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isNextPageLoading.collect { isLoading ->
+                    vacancyAdapter.showLoading(isLoading)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.toast.collect { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
