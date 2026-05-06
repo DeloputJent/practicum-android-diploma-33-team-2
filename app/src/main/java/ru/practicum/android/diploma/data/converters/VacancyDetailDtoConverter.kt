@@ -82,9 +82,9 @@ class VacancyDetailDtoConverter {
         return phones?.map { VacancyDetails.Phone(it.comment, it.formatted) }
     }
     private fun convertSkills(skills: List<String>): String {
-        var resultString = ""
+        var resultString = String()
         skills.forEach { resultString = "$resultString • $it\n" }
-        return resultString
+        return resultString.trim()
     }
     private fun convertCurrency(currency: String): String {
         return when (currency) {

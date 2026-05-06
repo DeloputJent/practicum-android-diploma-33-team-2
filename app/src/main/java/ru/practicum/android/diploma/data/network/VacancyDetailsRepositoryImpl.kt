@@ -26,23 +26,13 @@ class VacancyDetailsRepositoryImpl(
                     id = vacancyId
                 )
                 if (!response.isSuccessful) {
-                    if (response.code() == 500) {
+                    if (response.code() == SERVER_ERROR) {
                         return@withContext Resource.Error(ErrorKind.SERVER)
                     }
-                    if (response.code() == 404) {
+                    if (response.code() == NO_RESOURCE_FOUND) {
                         return@withContext Resource.Error(ErrorKind.NO_INTERNET)
                     }
                 }
-    override suspend fun getVacancyDetail(vacancyId: String): Resource<VacancyDetailResult> = withContext(
-        Dispatchers.IO
-    ) {
-        try {
-            val response = api.searchVacancies(
-                authorization = "Bearer ${BuildConfig.API_ACCESS_TOKEN}",
-                text = vacancyId,
-                page = 0,
-            )
-
                 val json = response.body()?.string()
                 if (json.isNullOrEmpty()) {
                     return@withContext Resource.Error(ErrorKind.NO_INTERNET)
@@ -54,5 +44,9 @@ class VacancyDetailsRepositoryImpl(
                 Resource.Error(ErrorKind.SERVER)
             }
         }
+    }
+    companion object{
+        private const val SERVER_ERROR = 500
+        private const val NO_RESOURCE_FOUND = 404
     }
 }
