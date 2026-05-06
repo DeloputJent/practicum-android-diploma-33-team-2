@@ -45,7 +45,7 @@ class VacancyDetailsRepositoryImpl(
             }
         }
     }
-    companion object{
+    companion object {
         private const val SERVER_ERROR = 500
         private const val NO_RESOURCE_FOUND = 404
     }
