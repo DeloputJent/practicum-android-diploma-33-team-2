@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.ui.vacancy
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
@@ -16,13 +17,21 @@ import java.util.Locale
 
 class VacancyAdapter(
     private val clickListener: VacancyClickListener,
-) : RecyclerView.Adapter<VacancyAdapter.VacancyViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun interface VacancyClickListener {
         fun onVacancyClick(vacancy: VacancyShort)
     }
 
     private val items = mutableListOf<VacancyShort>()
+    private var showLoading = false
+
+    fun showLoading(show: Boolean) {
+        if (showLoading != show) {
+            showLoading = show
+            notifyDataSetChanged()
+        }
+    }
 
     fun submitList(newItems: List<VacancyShort>) {
         items.clear()
@@ -30,17 +39,30 @@ class VacancyAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VacancyViewHolder {
+    override fun getItemViewType(position: Int): Int {
+        return if (showLoading && position == itemCount - 1) TYPE_LOADING else TYPE_ITEM
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemVacancyBinding.inflate(inflater, parent, false)
-        return VacancyViewHolder(binding, clickListener)
+        return if (viewType == TYPE_LOADING) {
+            val view = inflater.inflate(R.layout.item_loading, parent, false)
+            LoadingViewHolder(view)
+        } else {
+            val binding = ItemVacancyBinding.inflate(inflater, parent, false)
+            VacancyViewHolder(binding, clickListener)
+        }
     }
 
-    override fun onBindViewHolder(holder: VacancyViewHolder, position: Int) {
-        holder.bind(items[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is VacancyViewHolder) {
+            holder.bind(items[position])
+        }
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = items.size + if (showLoading) 1 else 0
+
+    private class LoadingViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     class VacancyViewHolder(
         private val binding: ItemVacancyBinding,
@@ -92,5 +114,10 @@ class VacancyAdapter(
             if (url.isNullOrBlank()) return null
             return if (url.startsWith("//")) "https:$url" else url
         }
+    }
+
+    private companion object {
+        private const val TYPE_ITEM = 0
+        private const val TYPE_LOADING = 1
     }
 }

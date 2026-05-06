@@ -22,7 +22,8 @@ class VacancyDetailsRepositoryImpl(
         try {
             val response = api.searchVacancies(
                 authorization = "Bearer ${BuildConfig.API_ACCESS_TOKEN}",
-                text = vacancyId
+                text = vacancyId,
+                page = 0,
             )
 
             if (!response.isSuccessful) {

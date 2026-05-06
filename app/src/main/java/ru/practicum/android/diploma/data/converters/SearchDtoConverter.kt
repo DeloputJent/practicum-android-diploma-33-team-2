@@ -11,6 +11,8 @@ class SearchDtoConverter {
     fun map(responseDto: VacanciesSearchResponseDto): SearchResult {
         return SearchResult(
             found = responseDto.found,
+            pages = responseDto.pages,
+            page = responseDto.page,
             items = responseDto.items.map { map(it) }
         )
     }
