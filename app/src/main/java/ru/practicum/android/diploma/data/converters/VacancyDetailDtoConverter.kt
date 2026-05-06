@@ -43,24 +43,17 @@ class VacancyDetailDtoConverter {
             if (salary.to != null) salaryString = salaryString + "до " + salary.to.toString() + " "
             if (salaryString.isNotEmpty()) {
                 if (salary.currency != null) salaryString += convertCurrency(salary.currency)
-            } else {
-                return "Зарплата не указана"
+                return salaryString
             }
-            return salaryString
-        } else {
-            return "Зарплата не указана"
         }
+        return "Зарплата не указана"
     }
 
     private fun convertAddress(
         address: VacancyDetailsDto.Address?,
         areaName: VacancyDetailsDto.Area
     ): String {
-        return if (address != null) {
-            address.raw
-        } else {
-            areaName.name
-        }
+        return address?.raw ?: areaName.name
     }
 
     private fun convertToScheduleAndEmployment(

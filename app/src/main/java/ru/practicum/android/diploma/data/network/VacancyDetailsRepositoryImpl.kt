@@ -17,7 +17,6 @@ class VacancyDetailsRepositoryImpl(
     private val converter: VacancyDetailDtoConverter,
     private val gson: Gson,
 ) : VacancyDetailRepository {
-
     override suspend fun getVacancyDetail(vacancyId: String): Resource<VacancyDetailResult> {
         return withContext(Dispatchers.IO) {
             try {
@@ -25,24 +24,29 @@ class VacancyDetailsRepositoryImpl(
                     authorization = "Bearer ${BuildConfig.API_ACCESS_TOKEN}",
                     id = vacancyId
                 )
-                if (!response.isSuccessful) {
-                    if (response.code() == SERVER_ERROR) {
-                        return@withContext Resource.Error(ErrorKind.SERVER)
-                    }
-                    if (response.code() == NO_RESOURCE_FOUND) {
-                        return@withContext Resource.Error(ErrorKind.NO_INTERNET)
+                when {
+                    !response.isSuccessful -> isResponseUnsuccessful(response.code())
+                    else -> {
+                        val json = response.body()?.string()
+                        if (json.isNullOrEmpty()) {
+                            Resource.Error(ErrorKind.NO_INTERNET)
+                        } else {
+                            val vacancy = gson.fromJson(json, VacancyDetailsDto::class.java)
+                            val dto = VacancyDetailsResponse(vacancy)
+                            Resource.Success(converter.map(dto))
+                        }
                     }
                 }
-                val json = response.body()?.string()
-                if (json.isNullOrEmpty()) {
-                    return@withContext Resource.Error(ErrorKind.NO_INTERNET)
-                }
-                val vacancy = gson.fromJson(json, VacancyDetailsDto::class.java)
-                val dto = VacancyDetailsResponse(vacancy)
-                Resource.Success(converter.map(dto))
             } catch (e: Exception) {
                 Resource.Error(ErrorKind.SERVER)
             }
+        }
+    }
+    private fun isResponseUnsuccessful(httpCode: Int): Resource<VacancyDetailResult> {
+        return when (httpCode) {
+            SERVER_ERROR -> Resource.Error(ErrorKind.SERVER)
+            NO_RESOURCE_FOUND -> Resource.Error(ErrorKind.NO_INTERNET)
+            else -> Resource.Error(ErrorKind.SERVER)
         }
     }
     companion object {
