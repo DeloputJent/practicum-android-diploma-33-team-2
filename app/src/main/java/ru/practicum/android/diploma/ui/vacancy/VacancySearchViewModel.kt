@@ -83,7 +83,6 @@ class VacancySearchViewModel(
                 .collect { query ->
                     resetPaging()
                     currentQuery = query
-                    // HH API in this project behaves like 1-based paging: request page=1 to get first page.
                     loadPage(page = 1, isFirstPage = true)
                 }
         }
@@ -107,59 +106,81 @@ class VacancySearchViewModel(
             return
         }
 
+        startLoading(isFirstPage)
+        viewModelScope.launch {
+            val result = searchInteractor.searchVacancies(currentQuery, page)
+            stopLoading()
+            handleResult(result, page, isFirstPage)
+        }
+    }
+
+    private fun startLoading(isFirstPage: Boolean) {
         if (isFirstPage) {
             _state.value = VacancySearchUiState.Loading
         } else {
             _isNextPageLoading.value = true
         }
+    }
 
-        viewModelScope.launch {
-            when (val result = searchInteractor.searchVacancies(currentQuery, page)) {
-                is Resource.Success -> {
-                    _isNextPageLoading.value = false
+    private fun stopLoading() {
+        _isNextPageLoading.value = false
+    }
 
-                    val data = result.data
-                    if (data == null) {
-                        if (isFirstPage) {
-                            _state.value = VacancySearchUiState.ServerError
-                        } else {
-                            _toast.emit("Произошла ошибка")
-                        }
-                        return@launch
-                    }
+    private suspend fun handleResult(result: Resource<ru.practicum.android.diploma.domain.search.models.SearchResult>, page: Int, isFirstPage: Boolean) {
+        if (result is Resource.Success) {
+            handleSuccess(result.data, page, isFirstPage)
+        } else if (result is Resource.Error) {
+            handleError(result.kind, isFirstPage)
+        }
+    }
 
-                    loadedPages.add(page)
-                    currentPage = data.page
-                    maxPages = data.pages
+    private suspend fun handleSuccess(
+        data: ru.practicum.android.diploma.domain.search.models.SearchResult?,
+        requestedPage: Int,
+        isFirstPage: Boolean,
+    ) {
+        if (data == null) {
+            if (isFirstPage) {
+                _state.value = VacancySearchUiState.ServerError
+            } else {
+                _toast.emit("Произошла ошибка")
+            }
+            return
+        }
 
-                    for (item in data.items) {
-                        if (vacancyIds.add(item.id)) {
-                            vacancies.add(item)
-                        }
-                    }
+        loadedPages.add(requestedPage)
+        currentPage = data.page
+        maxPages = data.pages
 
-                    if (vacancies.isEmpty()) {
-                        _state.value = VacancySearchUiState.Empty
-                    } else {
-                        _state.value = VacancySearchUiState.Content(data.found, vacancies.toList())
-                    }
-                }
-                is Resource.Error -> {
-                    _isNextPageLoading.value = false
+        addUniqueItems(data.items)
 
-                    if (isFirstPage) {
-                        _state.value = when (result.kind) {
-                            ErrorKind.NO_INTERNET -> VacancySearchUiState.NoInternet
-                            ErrorKind.SERVER -> VacancySearchUiState.ServerError
-                        }
-                    } else {
-                        when (result.kind) {
-                            ErrorKind.NO_INTERNET -> _toast.emit("Проверьте подключение к интернету")
-                            ErrorKind.SERVER -> _toast.emit("Произошла ошибка")
-                        }
-                    }
-                }
-                Resource.Loading -> Unit
+        if (vacancies.isEmpty()) {
+            _state.value = VacancySearchUiState.Empty
+        } else {
+            _state.value = VacancySearchUiState.Content(data.found, vacancies.toList())
+        }
+    }
+
+    private fun addUniqueItems(items: List<VacancyShort>) {
+        for (item in items) {
+            if (vacancyIds.add(item.id)) {
+                vacancies.add(item)
+            }
+        }
+    }
+
+    private suspend fun handleError(kind: ErrorKind, isFirstPage: Boolean) {
+        if (isFirstPage) {
+            if (kind == ErrorKind.NO_INTERNET) {
+                _state.value = VacancySearchUiState.NoInternet
+            } else {
+                _state.value = VacancySearchUiState.ServerError
+            }
+        } else {
+            if (kind == ErrorKind.NO_INTERNET) {
+                _toast.emit("Проверьте подключение к интернету")
+            } else {
+                _toast.emit("Произошла ошибка")
             }
         }
     }
