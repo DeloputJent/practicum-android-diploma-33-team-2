@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingTop="9dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="9dp">
+    <ImageView
+        android:id="@+id/imageFavouriteLogo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/rounded_field_gray_12dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_placeholder_logo_48dp"/>
+    <TextView
+        android:id="@+id/textFavouriteVacancyName"
+        style="@style/Medium_YS_Display_22sp_black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/imageFavouriteLogo"
+        android:layout_marginStart="12dp"
+        android:maxLines="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Android-разработчик, Москва" />
+    <TextView
+        android:id="@+id/textFavouriteVacancyCompany"
+        style="@style/Regular_YS_Display_16sp_black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/textFavouriteVacancyName"
+        app:layout_constraintTop_toBottomOf="@id/textFavouriteVacancyName"
+        tools:text="Еда"/>
+    <TextView
+        android:id="@+id/textVacancySalary"
+        style="@style/Medium_YS_Display_16sp_black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/textFavouriteVacancyCompany"
+        app:layout_constraintTop_toBottomOf="@id/textFavouriteVacancyCompany"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="от 100 000 ₽" />
+</androidx.constraintlayout.widget.ConstraintLayout>
