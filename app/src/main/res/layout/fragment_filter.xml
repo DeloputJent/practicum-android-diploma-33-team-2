@@ -37,7 +37,7 @@
     <androidx.constraintlayout.widget.Group
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:id="@+id/buttonSelectWorkPlace"
+        android:id="@+id/viewButtonSelectWorkPlace"
         app:constraint_referenced_ids="textHintSelectWorkPlace,imageWorkPlaceGoClear"/>
         <TextView
             android:id="@+id/textHintSelectWorkPlace"
@@ -53,7 +53,7 @@
             android:textColorHint="@color/HH_Gray"
             android:background="@null"
             android:scaleType="center"/>
-        <ImageButton
+        <ImageView
             android:id="@+id/imageWorkPlaceGoClear"
             android:layout_width="48dp"
             android:layout_height="48dp"
