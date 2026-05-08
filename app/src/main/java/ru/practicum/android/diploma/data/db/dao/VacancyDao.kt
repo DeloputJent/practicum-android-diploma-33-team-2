@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.data.db.entity.VacancyCardEntity
 
 @Dao
@@ -12,7 +13,7 @@ interface VacancyDao {
     suspend fun insertVacancy(favoriteTrack: VacancyCardEntity)
 
     @Query("SELECT * FROM vacancy_card_table")
-    suspend fun getVacancies(): List<VacancyCardEntity>
+    fun getVacancies(): Flow<List<VacancyCardEntity>>
 
     @Query("SELECT * FROM vacancy_card_table WHERE id = :vacancyId LIMIT 1")
     suspend fun getVacancyById(vacancyId: String): VacancyCardEntity?
