@@ -35,6 +35,9 @@ class RootActivity : AppCompatActivity() {
                 R.id.detailFragment -> {
                     binding.bottomNavigationView.visibility = View.GONE
                 }
+                R.id.filterFragment  -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
