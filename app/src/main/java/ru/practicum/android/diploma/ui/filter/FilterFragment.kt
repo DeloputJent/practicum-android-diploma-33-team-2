@@ -6,9 +6,11 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterBinding
 
@@ -25,6 +27,8 @@ class FilterFragment  : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel=getViewModel()
 
         binding.buttonGoBack.setOnClickListener {
             findNavController().navigateUp()
@@ -44,23 +48,55 @@ class FilterFragment  : Fragment() {
                 }
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int){}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (!p0.isNullOrEmpty()) {
+                    binding.buttonClearSalaryInput.visibility = View.VISIBLE
+                    binding.textHintWantedSalary.setTextColor(resources.getColor(R.color.HH_Blue))
+                } else {
+                    binding.buttonClearSalaryInput.visibility = View.GONE
+                    binding.textHintWantedSalary.setTextColor(resources.getColor(R.color.HH_Gray))
+                }
             }
-
-            // ... другие методы TextWatcher
         })
 
+        binding.editWantedSalary.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                if (!binding.editWantedSalary.text.isNullOrEmpty()) {
+                    binding.buttonClearSalaryInput.visibility = View.VISIBLE
+                    binding.textHintWantedSalary.setTextColor(resources.getColor(R.color.HH_Blue))
+                } else  {
+                    binding.textHintWantedSalary.setTextColor(resources.getColor(R.color.HH_Gray))
+                }
+            } else {
+                binding.buttonClearSalaryInput.visibility = View.GONE
+                if (!binding.editWantedSalary.text.isNullOrEmpty()) {
+                    binding.textHintWantedSalary.setTextColor(resources.getColor(R.color.HH_Black))
+                } else binding.textHintWantedSalary.setTextColor(resources.getColor(R.color.HH_Gray))
+            }
+        }
 
-        var isChecked = false
+        binding.editWantedSalary.setOnEditorActionListener { _, actionId, _ ->
+            val action = actionId == EditorInfo.IME_ACTION_DONE
+            if (action)  binding.editWantedSalary.clearFocus()
+            false
+        }
+
+        binding.buttonClearSalaryInput.setOnClickListener{
+            binding.editWantedSalary.setText("")
+        }
 
         binding.textOnlyWithSalaryCheckBox.setOnClickListener {
-            isChecked = !isChecked
-            val drawableResourceId = if (isChecked) R.drawable.ic_check_box_on__24dp
-            else R.drawable.ic_check_box_off__24dp
+            viewModel.isCheckedOnlyWithSalary = !viewModel.isCheckedOnlyWithSalary
+            viewModel.isOnlyWithSalaryLiveData.value = viewModel.isCheckedOnlyWithSalary
+
+            val drawableResourceId = if (viewModel.isCheckedOnlyWithSalary) {
+                R.drawable.ic_check_box_on__24dp
+            } else {
+                R.drawable.ic_check_box_off__24dp
+            }
+
             binding.textOnlyWithSalaryCheckBox.setCompoundDrawablesWithIntrinsicBounds(
                 null,
                 null,
@@ -78,6 +114,16 @@ class FilterFragment  : Fragment() {
             DropIndustryFilter()
         }
 
+    }
+
+    private fun visibilityOfFilterButtons(isVisible: Boolean){
+        if (isVisible) {
+            binding.buttonApplyFilterParameters.visibility = View.VISIBLE
+            binding.buttonDropFilterParameters.visibility = View.VISIBLE
+        } else {
+            binding.buttonApplyFilterParameters.visibility = View.GONE
+            binding.buttonDropFilterParameters.visibility = View.GONE
+        }
     }
 
     private fun SetWorkAreaFilter(location:String){
