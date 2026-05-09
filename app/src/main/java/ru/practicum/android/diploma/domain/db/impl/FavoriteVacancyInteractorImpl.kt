@@ -20,6 +20,10 @@ class FavoriteVacancyInteractorImpl(
         return favoriteVacancyRepository.getVacanciesId()
     }
 
+    override suspend fun getVacancyById(vacancyId: String): VacancyCard? {
+        return favoriteVacancyRepository.getVacancyById(vacancyId)
+    }
+
     override suspend fun deleteVacancyById(vacancyId: String) {
         favoriteVacancyRepository.deleteVacancyById(vacancyId)
     }

@@ -5,16 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFavoritesBinding
+import ru.practicum.android.diploma.domain.favorites.models.VacancyCard
 
 class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private val viewModel by viewModel<FavoritesViewModel>()
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
-    val bundle = Bundle()
+    private val adapterClickListener = object : FavoritesAdapter.FavoriteClickListener {
+        override fun onVacancyClick(vacancy: VacancyCard) {
+        }
+    }
+    private val adapter = FavoritesAdapter(adapterClickListener)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,6 +39,28 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = binding.recyclerFavourites
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+
+        viewModel.load()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.vacancies.collect { list ->
+                    adapter.submitList(list)
+                    renderEmptyState(list.isEmpty())
+                }
+            }
+        }
+    }
+
+    private fun renderEmptyState(isEmpty: Boolean) {
+        if (isEmpty) {
+            binding.recyclerFavourites.visibility = View.GONE
+            binding.layoutNoVacancy.visibility = View.VISIBLE
+        } else {
+            binding.recyclerFavourites.visibility = View.VISIBLE
+            binding.layoutNoVacancy.visibility = View.GONE
+        }
+        binding.layoutLoadError.visibility = View.GONE
     }
 
     override fun onDestroyView() {
