@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterIndustryBinding
 import ru.practicum.android.diploma.presentation.favorites.IndustryScrollAdapter
 
@@ -40,13 +41,15 @@ class IndustryFragment : Fragment() {
 
             }
         )
-
         recyclerView.adapter = industryNamesAdapter
+
+        binding.buttonApplyIndustryFilter.setOnClickListener {
+            findNavController().navigate(R.id.action_industryFragment_to_filterFragment)
+        }
 
         binding.buttonGoBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
     }
 
     override fun onDestroyView() {

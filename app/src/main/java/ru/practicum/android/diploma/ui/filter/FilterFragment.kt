@@ -34,8 +34,10 @@ class FilterFragment  : Fragment() {
             findNavController().navigateUp()
         }
 
-        binding.buttonAddWorkPlaceFilter.setOnClickListener {
+        binding.buttonAddWorkPlaceFilter.setOnClickListener { }
 
+        binding.buttonAddIndustryFilter.setOnClickListener {
+            findNavController().navigate(R.id.action_filterFragment_to_industryFragment)
         }
 
         binding.editWantedSalary.addTextChangedListener(object : TextWatcher {
