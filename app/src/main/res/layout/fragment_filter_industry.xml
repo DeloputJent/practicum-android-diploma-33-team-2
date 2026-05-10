@@ -69,7 +69,7 @@
         app:layout_constraintEnd_toEndOf="@id/editWantedSalary"
         android:layout_marginEnd="4dp"/>
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecyclerView"
+        android:id="@+id/industryRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
