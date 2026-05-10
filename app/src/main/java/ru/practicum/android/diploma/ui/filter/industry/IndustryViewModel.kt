@@ -2,4 +2,4 @@ package ru.practicum.android.diploma.ui.filter.industry
 
 import androidx.lifecycle.ViewModel
 
-class IndustryViewModel: ViewModel()
+class IndustryViewModel : ViewModel()
