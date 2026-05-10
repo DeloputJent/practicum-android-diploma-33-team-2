@@ -260,7 +260,8 @@
         style="@style/Medium_YS_Display_16sp_black"
         android:textColor="@color/HH_White"
         android:gravity="center"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="visible"/>
     
     <TextView
         android:id="@+id/buttonDropFilterParameters"
@@ -277,7 +278,6 @@
         style="@style/Medium_YS_Display_16sp_black"
         android:textColor="@color/HH_Red"
         android:gravity="center"
-        android:visibility="gone"/>
-
-
+        android:visibility="gone"
+        tools:visibility="visible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
