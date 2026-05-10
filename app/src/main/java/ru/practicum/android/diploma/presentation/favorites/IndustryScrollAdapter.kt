@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class IndustryScrollAdapter(
-    private val clickListener: (String) -> Unit={}
+    private val clickListener: (String) -> Unit = {}
 ) : RecyclerView.Adapter<IndustryScrollViewHolder> () {
     private val industryNames: MutableList<String> = mutableListOf()
 
@@ -12,7 +12,7 @@ class IndustryScrollAdapter(
         IndustryScrollViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: IndustryScrollViewHolder, position: Int) {
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener {
             clickListener(industryNames[position])
         }
     }
