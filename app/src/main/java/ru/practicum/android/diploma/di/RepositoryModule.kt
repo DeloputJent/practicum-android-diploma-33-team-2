@@ -5,10 +5,12 @@ import org.koin.dsl.module
 import ru.practicum.android.diploma.data.db.impl.FavoriteVacancyRepositoryImpl
 import ru.practicum.android.diploma.data.details.ExternalNavigator
 import ru.practicum.android.diploma.data.network.SearchRepositoryImpl
+import ru.practicum.android.diploma.data.network.SearchWithFilterRepositoryImpl
 import ru.practicum.android.diploma.data.network.VacancyDetailsRepositoryImpl
 import ru.practicum.android.diploma.domain.db.api.FavoriteVacancyRepository
 import ru.practicum.android.diploma.domain.detail.api.IntentProvider
 import ru.practicum.android.diploma.domain.detail.api.VacancyDetailRepository
+import ru.practicum.android.diploma.domain.filter.api.SearchWithFilterRepository
 import ru.practicum.android.diploma.domain.search.api.SearchRepository
 
 val repositoryModule = module {
@@ -24,5 +26,13 @@ val repositoryModule = module {
     }
     single<IntentProvider> {
         ExternalNavigator(androidContext())
+    }
+    single<SearchWithFilterRepository> {
+        SearchWithFilterRepositoryImpl(
+            api = get(),
+            converter = get(),
+            industryConverter = get(),
+            gson = get()
+        )
     }
 }
