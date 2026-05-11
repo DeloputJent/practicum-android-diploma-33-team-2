@@ -2,13 +2,14 @@ package ru.practicum.android.diploma.data.network
 
 import com.google.gson.Gson
 import com.google.gson.JsonIOException
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.data.converters.IndustryListDtoConverter
 import ru.practicum.android.diploma.data.converters.SearchDtoConverter
 import ru.practicum.android.diploma.data.dto.search.VacanciesSearchResponseDto
-import ru.practicum.android.diploma.data.filter.IndustryResponseDto
+import ru.practicum.android.diploma.data.filter.dto.FilterIndustryDto
 import ru.practicum.android.diploma.domain.filter.api.SearchWithFilterRepository
 import ru.practicum.android.diploma.domain.filter.models.IndustryListResult
 import ru.practicum.android.diploma.domain.search.models.SearchResult
@@ -36,8 +37,13 @@ class SearchWithFilterRepositoryImpl(
                         if (json.isNullOrEmpty()) {
                             Resource.Error(ErrorKind<IndustryListResult>.NO_INTERNET)
                         } else {
-                            val dto = gson.fromJson(json, IndustryResponseDto::class.java)
-                            Resource.Success(industryConverter.map(dto))
+                            val dtoList: List<FilterIndustryDto> = gson.fromJson(
+                                json,
+                                object : TypeToken<List<FilterIndustryDto>>() {}.type
+                            )
+                            Resource.Success(
+                                IndustryListResult(items = dtoList.map { industryConverter.map(it) })
+                            )
                         }
                     }
                 }

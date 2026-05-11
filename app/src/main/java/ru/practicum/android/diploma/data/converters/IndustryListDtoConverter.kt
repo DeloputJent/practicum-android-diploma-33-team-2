@@ -6,14 +6,12 @@ import ru.practicum.android.diploma.domain.filter.models.FilterIndustry
 import ru.practicum.android.diploma.domain.filter.models.IndustryListResult
 
 class IndustryListDtoConverter {
-
     fun map(responseDto: IndustryResponseDto): IndustryListResult {
         return IndustryListResult(
             items = responseDto.items.map { map(it) }
         )
     }
-
-    private fun map(responseDto: FilterIndustryDto): FilterIndustry {
+    fun map(responseDto: FilterIndustryDto): FilterIndustry {
         return FilterIndustry(
             id = responseDto.id,
             name = responseDto.name

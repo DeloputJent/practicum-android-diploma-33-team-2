@@ -14,14 +14,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterIndustryBinding
 import ru.practicum.android.diploma.presentation.favorites.IndustryScrollAdapter
-import ru.practicum.android.diploma.ui.vacancy.VacancySearchUiState
 
 class IndustryFragment : Fragment() {
-    private lateinit var viewModel: IndustryViewModel
+    private val viewModel by viewModel<IndustryViewModel>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var industryNamesAdapter: IndustryScrollAdapter
     private var _binding: FragmentFilterIndustryBinding? = null
@@ -36,14 +35,12 @@ class IndustryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = getViewModel()
-
         recyclerView = binding.industryRecyclerView
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         industryNamesAdapter = IndustryScrollAdapter(
-            clickListener = { industryName ->
+            clickListener = { industryName -> {}
             }
         )
         recyclerView.adapter = industryNamesAdapter
@@ -53,7 +50,7 @@ class IndustryFragment : Fragment() {
                 viewModel.state.collect { state ->
                     when (state) {
                         IndustryListScreenState.Loading -> {
-                            binding.apply { recyclerView.visibility = View.GONE  }
+                            binding.apply { recyclerView.visibility = View.GONE }
                         }
                         is IndustryListScreenState.Content -> {
                             binding.apply { recyclerView.visibility = View.VISIBLE }
