@@ -132,20 +132,26 @@ class DetailFragment : Fragment() {
             } else {
                 textAddress.text = vacancy.areaName
             }
-            Glide.with(requireContext())
-                .load(vacancy.employerLogo)
-                .centerCrop()
-                .transform(
-                    RoundedCorners(
-                        TypedValueCompat.dpToPx(
-                            CORNER_RADIUS,
-                            requireContext().resources.displayMetrics
+            if (vacancy.employerLogo.isBlank()) {
+                imageLogo.visibility = View.VISIBLE
+                imageLogo.setImageResource(R.drawable.ic_placeholder_logo_48dp)
+            } else {
+                imageLogo.visibility = View.VISIBLE
+                Glide.with(requireContext())
+                    .load(vacancy.employerLogo)
+                    .centerCrop()
+                    .transform(
+                        RoundedCorners(
+                            TypedValueCompat.dpToPx(
+                                CORNER_RADIUS,
+                                requireContext().resources.displayMetrics
+                            )
+                                .toInt()
                         )
-                            .toInt()
                     )
-                )
-                .placeholder(R.drawable.ic_placeholder_logo_48dp)
-                .into(binding.imageLogo)
+                    .placeholder(R.drawable.ic_placeholder_logo_48dp)
+                    .into(binding.imageLogo)
+            }
         }
     }
 

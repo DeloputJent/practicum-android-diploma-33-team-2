@@ -3,9 +3,12 @@ package ru.practicum.android.diploma.data.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import ru.practicum.android.diploma.data.db.dao.VacancyDao
+import ru.practicum.android.diploma.data.db.dao.VacancyDetailsDao
 import ru.practicum.android.diploma.data.db.entity.VacancyCardEntity
+import ru.practicum.android.diploma.data.db.entity.VacancyDetailsEntity
 
-@Database(version = 1, entities = [VacancyCardEntity::class])
+@Database(version = 2, entities = [VacancyCardEntity::class, VacancyDetailsEntity::class])
 abstract class VacancyDatabase : RoomDatabase() {
     abstract fun getVacancyDao(): VacancyDao
+    abstract fun getVacancyDetailsDao(): VacancyDetailsDao
 }

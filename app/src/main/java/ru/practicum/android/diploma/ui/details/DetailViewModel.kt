@@ -58,12 +58,18 @@ class DetailViewModel(
                 }
                 is Resource.Error -> {
                     _state.value = when (result.kind) {
-                        ErrorKind.NO_INTERNET -> VacancyDetailsScreenState.NothingFound
+                        ErrorKind.NO_INTERNET -> loadFromCacheOrEmpty(vacancyId)
                         ErrorKind.SERVER -> VacancyDetailsScreenState.ServerError
                     }
                 }
             }
         }
+    }
+
+    private suspend fun loadFromCacheOrEmpty(vacancyId: String): VacancyDetailsScreenState {
+        val cached = favoriteInteractor.getVacancyDetailsById(vacancyId) ?: return VacancyDetailsScreenState.NothingFound
+        currentVacancy = cached
+        return VacancyDetailsScreenState.Content(cached)
     }
 
     fun shareVacancy() {
@@ -83,11 +89,11 @@ class DetailViewModel(
         viewModelScope.launch {
             if (isFavorite) {
                 favoriteInteractor.deleteVacancyById(vacancyId)
+                favoriteInteractor.deleteVacancyDetailsById(vacancyId)
             } else {
                 currentVacancy?.let { vacancy ->
-                    favoriteInteractor.insertVacancy(
-                        convertToVacancyCard(vacancy)
-                    )
+                    favoriteInteractor.insertVacancy(convertToVacancyCard(vacancy))
+                    favoriteInteractor.saveVacancyDetails(vacancy)
                 }
             }
         }

@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.domain.db.impl
 import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.domain.db.api.FavoriteVacancyInteractor
 import ru.practicum.android.diploma.domain.db.api.FavoriteVacancyRepository
+import ru.practicum.android.diploma.domain.detail.model.VacancyDetails
 import ru.practicum.android.diploma.domain.favorites.models.VacancyCard
 
 class FavoriteVacancyInteractorImpl(
@@ -22,6 +23,18 @@ class FavoriteVacancyInteractorImpl(
 
     override suspend fun getVacancyById(vacancyId: String): VacancyCard? {
         return favoriteVacancyRepository.getVacancyById(vacancyId)
+    }
+
+    override suspend fun saveVacancyDetails(details: VacancyDetails) {
+        favoriteVacancyRepository.saveVacancyDetails(details)
+    }
+
+    override suspend fun getVacancyDetailsById(vacancyId: String): VacancyDetails? {
+        return favoriteVacancyRepository.getVacancyDetailsById(vacancyId)
+    }
+
+    override suspend fun deleteVacancyDetailsById(vacancyId: String) {
+        favoriteVacancyRepository.deleteVacancyDetailsById(vacancyId)
     }
 
     override suspend fun deleteVacancyById(vacancyId: String) {
