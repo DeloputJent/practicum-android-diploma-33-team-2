@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
+import ru.practicum.android.diploma.data.converters.IndustryListDtoConverter
 import ru.practicum.android.diploma.data.converters.SearchDtoConverter
 import ru.practicum.android.diploma.data.converters.VacancyDbConvertor
 import ru.practicum.android.diploma.data.converters.VacancyDetailDtoConverter
@@ -30,6 +31,7 @@ val dataModule = module {
     single<HhApi> { get<Retrofit>().create(HhApi::class.java) }
     single { SearchDtoConverter() }
     single { VacancyDetailDtoConverter() }
+    single { IndustryListDtoConverter() }
     single { VacancyDbConvertor() }
     single { Gson() }
 

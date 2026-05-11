@@ -7,13 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterIndustryBinding
 import ru.practicum.android.diploma.presentation.favorites.IndustryScrollAdapter
+import ru.practicum.android.diploma.ui.vacancy.VacancySearchUiState
 
 class IndustryFragment : Fragment() {
     private lateinit var viewModel: IndustryViewModel
@@ -37,6 +42,31 @@ class IndustryFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        industryNamesAdapter = IndustryScrollAdapter(
+            clickListener = { industryName ->
+            }
+        )
+        recyclerView.adapter = industryNamesAdapter
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    when (state) {
+                        IndustryListScreenState.Loading -> {
+                            binding.apply { recyclerView.visibility = View.GONE  }
+                        }
+                        is IndustryListScreenState.Content -> {
+                            binding.apply { recyclerView.visibility = View.VISIBLE }
+                            industryNamesAdapter.setIndustryNamesList(state.industryList)
+                        }
+                        IndustryListScreenState.ServerError -> {
+                            binding.apply { recyclerView.visibility = View.GONE }
+                        }
+                    }
+                }
+            }
+        }
+
         binding.editWantedIndustry.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 val fieldHasText = !p0.isNullOrEmpty()
@@ -45,12 +75,6 @@ class IndustryFragment : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
         })
-
-        industryNamesAdapter = IndustryScrollAdapter(
-            clickListener = { industryName ->
-            }
-        )
-        recyclerView.adapter = industryNamesAdapter
 
         binding.buttonApplyIndustryFilter.setOnClickListener {
             findNavController().navigate(R.id.action_industryFragment_to_filterFragment)
