@@ -7,14 +7,10 @@ import kotlinx.coroutines.withContext
 import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.data.converters.IndustryListDtoConverter
 import ru.practicum.android.diploma.data.converters.SearchDtoConverter
-import ru.practicum.android.diploma.data.dto.details.VacancyDetailsDto
-import ru.practicum.android.diploma.data.dto.details.VacancyDetailsResponse
 import ru.practicum.android.diploma.data.dto.search.VacanciesSearchResponseDto
-import ru.practicum.android.diploma.data.filter.dto.FilterIndustryDto
-import ru.practicum.android.diploma.domain.detail.model.VacancyDetailResult
+import ru.practicum.android.diploma.data.filter.IndustryResponseDto
 import ru.practicum.android.diploma.domain.filter.api.SearchWithFilterRepository
 import ru.practicum.android.diploma.domain.filter.models.IndustryListResult
-import ru.practicum.android.diploma.domain.search.api.SearchRepository
 import ru.practicum.android.diploma.domain.search.models.SearchResult
 import ru.practicum.android.diploma.util.ErrorKind
 import ru.practicum.android.diploma.util.Resource
@@ -23,7 +19,7 @@ import java.io.IOException
 class SearchWithFilterRepositoryImpl(
     private val api: HhApi,
     private val converter: SearchDtoConverter,
-    private val idustryConverter: IndustryListDtoConverter,
+    private val industryConverter: IndustryListDtoConverter,
     private val gson: Gson,
 ) : SearchWithFilterRepository {
 
@@ -40,24 +36,39 @@ class SearchWithFilterRepositoryImpl(
                         if (json.isNullOrEmpty()) {
                             Resource.Error(ErrorKind<IndustryListResult>.NO_INTERNET)
                         } else {
-                            val dto = gson.fromJson(json, FilterIndustryDto::class.java)
-                            Resource.Success(idustryConverter.map(dto))
+                            val dto = gson.fromJson(json, IndustryResponseDto::class.java)
+                            Resource.Success(industryConverter.map(dto))
                         }
                     }
                 }
             } catch (_: JsonIOException) {
-                Resource.Error<SearchResult>(ErrorKind<IndustryListResult>.SERVER)
+                Resource.Error<IndustryListResult>(ErrorKind<IndustryListResult>.SERVER)
             } catch (_: IOException) {
-                Resource.Error<SearchResult>(ErrorKind<IndustryListResult>.NO_INTERNET)
+                Resource.Error<IndustryListResult>(ErrorKind<IndustryListResult>.NO_INTERNET)
             } catch (_: Exception) {
-                Resource.Error<SearchResult>(ErrorKind<IndustryListResult>.SERVER)
+                Resource.Error<IndustryListResult>(ErrorKind<IndustryListResult>.SERVER)
             }
         }
     }
 
     override suspend fun getFilteredVacancy(
-        filterOptions: HashMap<String, String>
+        query: String,
+        page: Int,
+        industryId: Int?,
+        salary: Int?,
+        onlyWithSalary: Boolean,
     ): Resource<SearchResult> {
+        val filterOptions: HashMap<String, String> = HashMap()
+        filterOptions["query"] = query
+        filterOptions["page"] = page.toString()
+        if (industryId != null) {
+            filterOptions["industry"] = industryId.toString()
+        }
+        if (salary != null) {
+            filterOptions["salary"] = salary.toString()
+        }
+        filterOptions["only_with_salary"] = if (onlyWithSalary) "true" else "false"
+
         return withContext(Dispatchers.IO) {
             try {
                 val response = api.searchVacanciesWithFilters(
