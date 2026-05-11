@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.ui.filter.industry
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,26 +19,21 @@ class IndustryViewModel(private val interactor: SearchWithFilterInteractor,) : V
     }
 
     fun observeIndustryList() {
-        Log.d("industry", "observeIndustryList")
         viewModelScope.launch {
             _state.value = IndustryListScreenState.Loading
             when (val result = interactor.getAllIndustryList()) {
                 is Resource.Success -> {
                     val data = result.data
                     if (data == null) {
-                        Log.d("industry", "failure")
                         _state.value = IndustryListScreenState.ServerError
                     } else {
-                        Log.d("industry", "data[1]=${data.items[1].name}")
                         _state.value = IndustryListScreenState.Content(data.items)
                     }
                 }
                 is Resource.Loading -> {
-                    Log.d("industry", "loading")
                     _state.value = IndustryListScreenState.Loading
                 }
                 is Resource.Error -> {
-                    Log.d("industry", "error ${result.kind}")
                     _state.value = when (result.kind) {
                         ErrorKind.NO_INTERNET, ErrorKind.SERVER -> IndustryListScreenState.ServerError
                     }

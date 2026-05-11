@@ -95,4 +95,48 @@
         android:gravity="center"
         android:visibility="gone"
         tools:visibility="visible"/>
+    <ProgressBar android:id="@+id/progressBar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="374dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:indeterminateTint="@color/HH_Blue"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutNoResponse"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="104dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+        <ImageView
+            android:id="@+id/imageNoResponse"
+            android:layout_width="328dp"
+            android:layout_height="223dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="135dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="end|center_vertical"
+            android:scaleType="center"
+            app:srcCompat="@drawable/pic_scroll_didnt_recived_328dp"/>
+        <TextView
+            android:layout_width="268dp"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_unable_to_retrieve_the_list"
+            style="@style/Medium_YS_Display_22sp_black"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@id/imageNoResponse"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/imageNoResponse"
+            android:layout_marginStart="30dp"
+            app:layout_constraintEnd_toEndOf="@id/imageNoResponse"
+            android:layout_marginEnd="30dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

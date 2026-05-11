@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterIndustryBinding
-import ru.practicum.android.diploma.presentation.favorites.IndustryScrollAdapter
+import ru.practicum.android.diploma.presentation.filter.IndustryScrollAdapter
 
 class IndustryFragment : Fragment() {
     private val viewModel by viewModel<IndustryViewModel>()
@@ -40,27 +40,16 @@ class IndustryFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         industryNamesAdapter = IndustryScrollAdapter(
-            clickListener = { industryName -> {}
+            clickListener = { industryName -> {
+
+            }
             }
         )
         recyclerView.adapter = industryNamesAdapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect { state ->
-                    when (state) {
-                        IndustryListScreenState.Loading -> {
-                            binding.apply { recyclerView.visibility = View.GONE }
-                        }
-                        is IndustryListScreenState.Content -> {
-                            binding.apply { recyclerView.visibility = View.VISIBLE }
-                            industryNamesAdapter.setIndustryNamesList(state.industryList)
-                        }
-                        IndustryListScreenState.ServerError -> {
-                            binding.apply { recyclerView.visibility = View.GONE }
-                        }
-                    }
-                }
+                viewModel.state.collect { state -> setScreenState(state) }
             }
         }
 
@@ -85,6 +74,33 @@ class IndustryFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setScreenState(state:IndustryListScreenState){
+        when (state) {
+            IndustryListScreenState.Loading -> {
+                binding.apply {
+                    layoutNoResponse.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                }
+            }
+            is IndustryListScreenState.Content -> {
+                binding.apply {
+                    layoutNoResponse.visibility = View.GONE
+                    progressBar.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                }
+                industryNamesAdapter.setIndustryNamesList(state.industryList)
+            }
+            IndustryListScreenState.ServerError -> {
+                binding.apply {
+                    layoutNoResponse.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                    recyclerView.visibility = View.GONE
+                }
+            }
+        }
     }
 
     private fun setClearButtonOnField(fieldHasText: Boolean) {

@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation.favorites
+package ru.practicum.android.diploma.presentation.filter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,16 +11,12 @@ class IndustryScrollViewHolder(private val binding: ItemIndustryBinding) : Recyc
 
     fun bind(industryName: FilterIndustry) {
         binding.textIndustryName.text = industryName.name.trim()
+        setFlag(industryName.flagOfSelection)
     }
 
-    private val flagOfSelection = binding.buttonSelectThisIndustry
-
-    fun setFlagOn() {
-        flagOfSelection.setImageResource(R.drawable.ic_radio_button_on_24dp)
-    }
-
-    fun setFlagOff() {
-        flagOfSelection.setImageResource(R.drawable.ic_radio_button_off_24dp)
+    fun setFlag(flagOfSelection : Boolean) {
+        if(flagOfSelection) binding.buttonSelectThisIndustry.setImageResource(R.drawable.ic_radio_button_on_24dp)
+        else binding.buttonSelectThisIndustry.setImageResource(R.drawable.ic_radio_button_off_24dp)
     }
 
     companion object {
