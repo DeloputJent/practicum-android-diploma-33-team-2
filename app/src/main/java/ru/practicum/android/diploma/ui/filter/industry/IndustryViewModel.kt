@@ -21,15 +21,15 @@ class IndustryViewModel(
     }
     private val _state = MutableStateFlow<IndustryListScreenState>(IndustryListScreenState.Loading)
     val state: StateFlow<IndustryListScreenState> = _state.asStateFlow()
-    var industryScroll : MutableList<FilterIndustry> = mutableListOf()
-    var filteredScroll : MutableList<FilterIndustry> = mutableListOf()
+    var industryScroll: MutableList<FilterIndustry> = mutableListOf()
+    var filteredScroll: MutableList<FilterIndustry> = mutableListOf()
     private var selectedIndustry = FilterIndustry()
 
-    fun chooseSelectedIndustry(selectedIndustry: FilterIndustry){
+    fun chooseSelectedIndustry(selectedIndustry: FilterIndustry) {
         this.selectedIndustry = selectedIndustry
     }
 
-    fun saveSelectedIndustry(){
+    fun saveSelectedIndustry() {
         val filterSet = saveFilter.getFilterSettings()
         saveFilter.updateFilterSettings(
             filterSet.copy(
@@ -39,7 +39,7 @@ class IndustryViewModel(
         )
     }
 
-    fun observeFilteredScroll(query:String) {
+    fun observeFilteredScroll(query: String) {
         filteredScroll = filteredByText(query)
         _state.value = IndustryListScreenState.Content(filteredScroll.toList())
     }
@@ -69,9 +69,9 @@ class IndustryViewModel(
         }
     }
     private fun filteredByText(string: String): MutableList<FilterIndustry> {
-        val filteredList : MutableList<FilterIndustry> = mutableListOf()
-        industryScroll.forEach{
-            if (it.name?.contains(string) ?:false ) filteredList.add(it)
+        val filteredList: MutableList<FilterIndustry> = mutableListOf()
+        industryScroll.forEach {
+            if (it.name?.contains(string) ?: false) filteredList.add(it)
         }
         return filteredList
     }

@@ -15,9 +15,12 @@ class IndustryScrollViewHolder(
         setFlag(industryName.flagOfSelection)
     }
 
-    fun setFlag(flagOfSelection : Boolean) {
-        if(flagOfSelection) binding.buttonSelectThisIndustry.setImageResource(R.drawable.ic_radio_button_on_24dp)
-        else binding.buttonSelectThisIndustry.setImageResource(R.drawable.ic_radio_button_off_24dp)
+    fun setFlag(flagOfSelection: Boolean) {
+        if (flagOfSelection) {
+            binding.buttonSelectThisIndustry.setImageResource(R.drawable.ic_radio_button_on_24dp)
+        } else {
+            binding.buttonSelectThisIndustry.setImageResource(R.drawable.ic_radio_button_off_24dp)
+        }
     }
 
     companion object {

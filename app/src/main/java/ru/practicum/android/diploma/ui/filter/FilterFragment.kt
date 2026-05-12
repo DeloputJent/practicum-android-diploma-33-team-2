@@ -106,20 +106,26 @@ class FilterFragment : Fragment() {
     }
 
     private fun renderSettings(settings: FilterSettings) {
-        if (settings.industryName!=null) setIndustryFilter(settings.industryName)
-        else dropIndustryFilter()
-        if (settings.salary!=null) binding.editWantedSalary.setText(settings.salary.toString())
-        else binding.editWantedSalary.setText("")
+        if (settings.industryName != null) {
+            setIndustryFilter(settings.industryName)
+        } else {
+            dropIndustryFilter()
+        }
+        if (settings.salary != null) {
+            binding.editWantedSalary.setText(settings.salary.toString())
+        } else {
+            binding.editWantedSalary.setText("")
+        }
         val drawableResourceId = if (settings.onlyWithSalary) {
             R.drawable.ic_check_box_on__24dp
         } else {
             R.drawable.ic_check_box_off__24dp
         }
         binding.textOnlyWithSalaryCheckBox.setCompoundDrawablesWithIntrinsicBounds(
-                null,
-                null,
-                ContextCompat.getDrawable(requireContext(), drawableResourceId),
-                null
+            null,
+            null,
+            ContextCompat.getDrawable(requireContext(), drawableResourceId),
+            null
         )
         visibilityOfFilterButtons(!settings.isSettingsEmpty())
     }
@@ -159,7 +165,7 @@ class FilterFragment : Fragment() {
             imageIndustryGoClear.setImageResource(R.drawable.ic_close_24dp)
             viewButtonSelectIndustry.visibility = View.VISIBLE
             buttonAddIndustryFilter.setOnClickListener {
-                viewModel.filterSettings= viewModel.filterSettings.copy(
+                viewModel.filterSettings = viewModel.filterSettings.copy(
                     industryId = null,
                     industryName = null
                 )

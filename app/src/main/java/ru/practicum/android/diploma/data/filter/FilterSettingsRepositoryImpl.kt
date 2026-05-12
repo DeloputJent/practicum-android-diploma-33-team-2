@@ -7,10 +7,10 @@ import com.google.gson.Gson
 import ru.practicum.android.diploma.domain.filter.api.FilterSettingsRepository
 import ru.practicum.android.diploma.domain.filter.models.FilterSettings
 
-class FilterSettingsRepositoryImpl(private val settingsStorage: SharedPreferences,
-                                   private val gson: Gson
-) : FilterSettingsRepository
-{
+class FilterSettingsRepositoryImpl(
+    private val settingsStorage: SharedPreferences,
+    private val gson: Gson
+) : FilterSettingsRepository {
     override fun getFilterSettings(): FilterSettings {
         val json = settingsStorage.getString(FILTER_SETTINGS, null)
         return if (json == null) {
@@ -36,7 +36,7 @@ class FilterSettingsRepositoryImpl(private val settingsStorage: SharedPreference
         }
     }
     companion object {
-        val defaultSettings=FilterSettings(null, null, null,false)
+        val defaultSettings = FilterSettings(null, null, null, false)
         const val FILTER_SETTINGS = "Filter_settings"
     }
 }

@@ -38,12 +38,14 @@ val repositoryModule = module {
             gson = get()
         )
     }
-    single<FilterSettingsRepository>{
-        FilterSettingsRepositoryImpl( androidContext()
-            .getSharedPreferences(
-                FilterSettingsRepositoryImpl.FILTER_SETTINGS,
-                Context.MODE_PRIVATE
-            ),get()
+    single<FilterSettingsRepository> {
+        FilterSettingsRepositoryImpl(
+            androidContext()
+                .getSharedPreferences(
+                    FilterSettingsRepositoryImpl.FILTER_SETTINGS,
+                    Context.MODE_PRIVATE
+                ),
+            get()
         )
     }
     factory { Gson() }
