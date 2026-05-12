@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.filter.api.SearchWithFilterInteractor
+import ru.practicum.android.diploma.domain.filter.models.FilterIndustry
 import ru.practicum.android.diploma.util.ErrorKind
 import ru.practicum.android.diploma.util.Resource
 
@@ -14,8 +15,18 @@ class IndustryViewModel(private val interactor: SearchWithFilterInteractor,) : V
     private val _state = MutableStateFlow<IndustryListScreenState>(IndustryListScreenState.Loading)
     val state: StateFlow<IndustryListScreenState> = _state.asStateFlow()
 
+    var industryScroll : MutableList<FilterIndustry> = mutableListOf()
+    var filteredScroll : MutableList<FilterIndustry> = mutableListOf()
+
+    //var selectedIndustry : FilterIndustry = FilterIndustry()
+
     init {
         observeIndustryList()
+    }
+
+    fun observeFilteredScroll(query:String) {
+        filteredScroll = filteredByText(query)
+        _state.value = IndustryListScreenState.Content(filteredScroll.toList())
     }
 
     fun observeIndustryList() {
@@ -27,6 +38,7 @@ class IndustryViewModel(private val interactor: SearchWithFilterInteractor,) : V
                     if (data == null) {
                         _state.value = IndustryListScreenState.ServerError
                     } else {
+                        industryScroll = data.items.toMutableList()
                         _state.value = IndustryListScreenState.Content(data.items)
                     }
                 }
@@ -40,5 +52,13 @@ class IndustryViewModel(private val interactor: SearchWithFilterInteractor,) : V
                 }
             }
         }
+    }
+
+    private fun filteredByText(string: String): MutableList<FilterIndustry> {
+        val filteredList : MutableList<FilterIndustry> = mutableListOf()
+        industryScroll.forEach{
+            if (it.name.contains(string)) filteredList.add(it)
+        }
+        return filteredList
     }
 }

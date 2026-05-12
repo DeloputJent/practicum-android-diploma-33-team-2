@@ -7,29 +7,29 @@ import ru.practicum.android.diploma.domain.filter.models.FilterIndustry
 class IndustryScrollAdapter(
     private val clickListener: (FilterIndustry) -> Unit = {}
 ) : RecyclerView.Adapter<IndustryScrollViewHolder> () {
-    private val filterIndustryList: MutableList<FilterIndustry> = mutableListOf()
+    private val industryList: MutableList<FilterIndustry> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IndustryScrollViewHolder =
         IndustryScrollViewHolder.Companion.from(parent)
 
     override fun onBindViewHolder(holder: IndustryScrollViewHolder, position: Int) {
-        holder.bind(filterIndustryList[position])
+        holder.bind(industryList[position])
         holder.itemView.setOnClickListener {
-            filterIndustryList[position].flagOfSelection=!filterIndustryList[position].flagOfSelection
-            holder.setFlag(filterIndustryList[position].flagOfSelection)
-            val selectedIndustry = listOf(filterIndustryList[position])
-            setIndustryNamesList(selectedIndustry)
-            //clickListener(selectedIndustry)
+            industryList.forEach { it.flagOfSelection = false }
+            industryList[position].flagOfSelection=!industryList[position].flagOfSelection
+            holder.setFlag(industryList[position].flagOfSelection)
+            setIndustryNamesList(industryList.toList())
+            clickListener(industryList[position])
         }
     }
 
     fun setIndustryNamesList(industryNames: List<FilterIndustry>) {
-        this.filterIndustryList.clear()
-        this.filterIndustryList.addAll(industryNames)
+        this.industryList.clear()
+        this.industryList.addAll(industryNames)
         notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
-        return filterIndustryList.size
+        return industryList.size
     }
 }
