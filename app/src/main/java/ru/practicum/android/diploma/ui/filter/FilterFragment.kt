@@ -3,7 +3,6 @@ package ru.practicum.android.diploma.ui.filter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -159,7 +158,14 @@ class FilterFragment : Fragment() {
             textHintSelectIndustry.visibility = View.GONE
             imageIndustryGoClear.setImageResource(R.drawable.ic_close_24dp)
             viewButtonSelectIndustry.visibility = View.VISIBLE
-            buttonAddIndustryFilter.setOnClickListener {dropIndustryFilter()}
+            buttonAddIndustryFilter.setOnClickListener {
+                viewModel.filterSettings= viewModel.filterSettings.copy(
+                    industryId = null,
+                    industryName = null
+                )
+                viewModel.updateFilterSettingsLiveData()
+                dropIndustryFilter()
+            }
         }
     }
 
@@ -173,20 +179,6 @@ class FilterFragment : Fragment() {
                 findNavController().navigate(R.id.action_filterFragment_to_industryFragment)
             }
         }
-    }
-
-    private fun checkBox(onlyWithSalary: Boolean){
-        val drawableResourceId = if (onlyWithSalary) {
-            R.drawable.ic_check_box_on__24dp
-        } else {
-            R.drawable.ic_check_box_off__24dp
-        }
-        binding.textOnlyWithSalaryCheckBox.setCompoundDrawablesWithIntrinsicBounds(
-            null,
-            null,
-            ContextCompat.getDrawable(requireContext(), drawableResourceId),
-            null
-        )
     }
 
     override fun onDestroyView() {
