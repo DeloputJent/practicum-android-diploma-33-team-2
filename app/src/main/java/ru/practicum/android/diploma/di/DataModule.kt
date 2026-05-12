@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import ru.practicum.android.diploma.data.converters.SearchDtoConverter
 import ru.practicum.android.diploma.data.converters.VacancyDbConvertor
 import ru.practicum.android.diploma.data.converters.VacancyDetailDtoConverter
+import ru.practicum.android.diploma.data.converters.VacancyDetailsDbConverter
 import ru.practicum.android.diploma.data.db.VacancyDatabase
 import ru.practicum.android.diploma.data.network.HhApi
 import ru.practicum.android.diploma.data.network.HhApiConstants
@@ -20,6 +21,7 @@ val dataModule = module {
             VacancyDatabase::class.java,
             "Vacancy_database.db"
         )
+            .fallbackToDestructiveMigration()
             .build()
     }
     single {
@@ -31,6 +33,7 @@ val dataModule = module {
     single { SearchDtoConverter() }
     single { VacancyDetailDtoConverter() }
     single { VacancyDbConvertor() }
+    single { VacancyDetailsDbConverter(get()) }
     single { Gson() }
 
 }

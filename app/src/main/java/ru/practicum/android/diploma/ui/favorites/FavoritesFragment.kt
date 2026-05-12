@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFavoritesBinding
 import ru.practicum.android.diploma.domain.favorites.models.VacancyCard
+import ru.practicum.android.diploma.ui.details.DetailFragment
 
 class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private val viewModel by viewModel<FavoritesViewModel>()
@@ -21,6 +23,10 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private val binding get() = _binding!!
     private val adapterClickListener = object : FavoritesAdapter.FavoriteClickListener {
         override fun onVacancyClick(vacancy: VacancyCard) {
+            findNavController().navigate(
+                R.id.action_favoritesFragment_to_detailFragment,
+                DetailFragment.createArgs(vacancy.id),
+            )
         }
     }
     private val adapter = FavoritesAdapter(adapterClickListener)
