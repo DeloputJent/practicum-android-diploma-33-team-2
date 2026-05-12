@@ -14,7 +14,6 @@ import ru.practicum.android.diploma.util.Resource
 class IndustryViewModel(private val interactor: SearchWithFilterInteractor,) : ViewModel() {
     private val _state = MutableStateFlow<IndustryListScreenState>(IndustryListScreenState.Loading)
     val state: StateFlow<IndustryListScreenState> = _state.asStateFlow()
-
     var industryScroll : MutableList<FilterIndustry> = mutableListOf()
     var filteredScroll : MutableList<FilterIndustry> = mutableListOf()
 

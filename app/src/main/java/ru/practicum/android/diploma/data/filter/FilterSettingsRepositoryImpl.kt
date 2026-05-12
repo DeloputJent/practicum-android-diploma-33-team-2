@@ -1,0 +1,33 @@
+package ru.practicum.android.diploma.data.filter
+
+import android.content.SharedPreferences
+import androidx.core.content.edit
+import com.google.gson.Gson
+import ru.practicum.android.diploma.domain.filter.api.FilterSettingsRepository
+import ru.practicum.android.diploma.domain.filter.models.FilterSettings
+
+class FilterSettingsRepositoryImpl(private val settingsStorage: SharedPreferences,
+                                   private val gson: Gson
+) : FilterSettingsRepository
+{
+    override fun getFilterSettings(): FilterSettings {
+        val json = settingsStorage.getString(FILTER_SETTINGS, null)
+        return if (json == null) {
+            defaultSettings
+        } else {
+            gson.fromJson(json, FilterSettings::class.java)
+        }
+    }
+
+    override fun updateFilterSettings(settings: FilterSettings) {
+        val json = gson.toJson(settings)
+        settingsStorage.edit {
+            putString(FILTER_SETTINGS, json)
+        }
+    }
+
+    companion object {
+        val defaultSettings=FilterSettings(null, null, false)
+        const val FILTER_SETTINGS = "Filter_settings"
+    }
+}
