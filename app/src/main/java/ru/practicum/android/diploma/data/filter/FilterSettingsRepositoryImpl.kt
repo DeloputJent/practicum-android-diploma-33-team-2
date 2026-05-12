@@ -36,7 +36,7 @@ class FilterSettingsRepositoryImpl(
         }
     }
     companion object {
-        val defaultSettings = FilterSettings(null,null, null, null, false)
+        val defaultSettings = FilterSettings(null, null, null, null, false)
         const val FILTER_SETTINGS = "Filter_settings"
     }
 }
