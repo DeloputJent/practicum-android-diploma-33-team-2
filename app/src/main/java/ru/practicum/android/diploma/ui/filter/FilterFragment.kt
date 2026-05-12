@@ -31,6 +31,7 @@ class FilterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = getViewModel()
+        viewModel.getStoragedFilterSettings()
 
         binding.buttonGoBack.setOnClickListener {
             findNavController().navigateUp()
@@ -40,10 +41,6 @@ class FilterFragment : Fragment() {
         }
 
         binding.buttonAddWorkPlaceFilter.setOnClickListener {}
-
-        binding.buttonAddIndustryFilter.setOnClickListener {
-            findNavController().navigate(R.id.action_filterFragment_to_industryFragment)
-        }
 
         binding.editWantedSalary.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -87,6 +84,9 @@ class FilterFragment : Fragment() {
 
         binding.textOnlyWithSalaryCheckBox.setOnClickListener {
             viewModel.filterSettings = viewModel.filterSettings.copy(
+                industryId = viewModel.filterSettings.industryId,
+                industryName = viewModel.filterSettings.industryName,
+                salary = viewModel.filterSettings.salary,
                 onlyWithSalary = !viewModel.filterSettings.onlyWithSalary
             )
         }
@@ -96,7 +96,6 @@ class FilterFragment : Fragment() {
         }
 
         binding.buttonDropFilterParameters.setOnClickListener {
-            dropWorkAreaFilter()
             dropIndustryFilter()
             viewModel.clearFilterSettings()
         }
@@ -117,6 +116,7 @@ class FilterFragment : Fragment() {
                 ContextCompat.getDrawable(requireContext(), drawableResourceId),
                 null
         )
+        visibilityOfFilterButtons(settings.isSettingsEmpty())
     }
 
     private fun isWantedSalaryFieldHasFocus(hasFocus: Boolean) {
@@ -147,32 +147,27 @@ class FilterFragment : Fragment() {
         }
     }
 
-    private fun setWorkAreaFilter(location: String) {
-        binding.textSelectedWorkPlace.text = location
-        binding.textHintWorkPlace.visibility = View.GONE
-        binding.imageWorkPlaceGoClear.setImageResource(R.drawable.ic_close_24dp)
-        binding.viewButtonSelectWorkPlace.visibility = View.VISIBLE
-    }
-
-    private fun dropWorkAreaFilter() {
-        binding.textSelectedWorkPlace.text = ""
-        binding.textHintWorkPlace.visibility = View.VISIBLE
-        binding.imageWorkPlaceGoClear.setImageResource(R.drawable.ic_arrow_forward_24dp)
-        binding.viewButtonSelectWorkPlace.visibility = View.GONE
-    }
-
     private fun setIndustryFilter(industryName: String) {
-        binding.textSelectedIndustry.text = industryName
-        binding.textHintIndustry.visibility = View.GONE
-        binding.imageIndustryGoClear.setImageResource(R.drawable.ic_close_24dp)
-        binding.viewButtonSelectIndustry.visibility = View.VISIBLE
+        binding.apply {
+            //textHintIndustry.visibility = View.VISIBLE
+            textSelectedIndustry.text = industryName
+            //textHintSelectIndustry.visibility = View.GONE
+            imageIndustryGoClear.setImageResource(R.drawable.ic_close_24dp)
+            viewButtonSelectIndustry.visibility = View.VISIBLE
+            buttonAddIndustryFilter.setOnClickListener {dropIndustryFilter()}
+        }
     }
 
     private fun dropIndustryFilter() {
-        binding.textSelectedIndustry.text = ""
-        binding.textHintIndustry.visibility = View.VISIBLE
-        binding.imageIndustryGoClear.setImageResource(R.drawable.ic_arrow_forward_24dp)
-        binding.viewButtonSelectIndustry.visibility = View.GONE
+        binding.apply {
+            textSelectedIndustry.text = ""
+            textHintSelectIndustry.visibility = View.VISIBLE
+            imageIndustryGoClear.setImageResource(R.drawable.ic_arrow_forward_24dp)
+            viewButtonSelectIndustry.visibility = View.GONE
+            buttonAddIndustryFilter.setOnClickListener {
+                findNavController().navigate(R.id.action_filterFragment_to_industryFragment)
+            }
+        }
     }
 
     override fun onDestroyView() {
