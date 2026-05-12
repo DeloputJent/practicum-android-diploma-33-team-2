@@ -9,7 +9,7 @@ class SearchInteractorImpl(
     private val repository: SearchRepository,
 ) : SearchInteractor {
 
-    override suspend fun searchVacancies(query: String): Resource<SearchResult> {
-        return repository.searchVacancies(query)
+    override suspend fun searchVacancies(query: String, page: Int): Resource<SearchResult> {
+        return repository.searchVacancies(query, page)
     }
 }

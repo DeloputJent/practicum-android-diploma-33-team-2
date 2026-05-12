@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/PhoneFrame"
+    android:layout_height="19dp"
+    android:layout_width="match_parent">
+    <TextView
+        android:id="@+id/textPhoneComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Рабочий:"
+        style="@style/Medium_YS_Display_16sp_black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <TextView
+        android:id="@+id/textPhoneNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/textPhoneComment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/Medium_YS_Display_16sp_black"
+        tools:text="+7 (999) 833 456"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,13 +13,20 @@
         <action
             android:id="@+id/action_vacancySearchFragment_to_filterFragment"
             app:destination="@id/filterFragment" />
+        <action
+            android:id="@+id/action_vacancySearchFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="ru.practicum.android.diploma.ui.favorites.FavoritesFragment"
         android:label="Избранные вакансии"
-        tools:layout="@layout/fragment_favorites" />
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/teamFragment"
@@ -32,5 +39,13 @@
         android:name="ru.practicum.android.diploma.ui.filter.FilterFragment"
         android:label="Фильтр"
         tools:layout="@layout/fragment_filter" />
-
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="ru.practicum.android.diploma.ui.details.DetailFragment"
+        android:label="Детали вакансии"
+        tools:layout="@layout/fragment_vacancy_detail">
+        <argument
+            android:name="vacancyId"
+            app:argType="string" />
+    </fragment>
 </navigation>

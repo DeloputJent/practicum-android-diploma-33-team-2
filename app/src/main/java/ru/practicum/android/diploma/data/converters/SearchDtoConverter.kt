@@ -11,17 +11,26 @@ class SearchDtoConverter {
     fun map(responseDto: VacanciesSearchResponseDto): SearchResult {
         return SearchResult(
             found = responseDto.found,
+            pages = responseDto.pages,
+            page = responseDto.page,
             items = responseDto.items.map { map(it) }
         )
     }
     private fun map(vacancyDto: VacancyCardDto): VacancyShort {
+        val logo = vacancyDto.employer?.logoUrls?.size90
+            ?: vacancyDto.employer?.logoUrls?.original
+            ?: vacancyDto.employer?.logoUrls?.size240
+            ?: vacancyDto.logo
+            ?: vacancyDto.logoPath
+        val company = vacancyDto.employer?.name ?: vacancyDto.company
+        val city = vacancyDto.area?.name ?: vacancyDto.address?.city ?: vacancyDto.city
         return VacancyShort(
             id = vacancyDto.id,
             name = vacancyDto.name,
-            company = vacancyDto.company,
-            city = vacancyDto.city,
+            company = company,
+            city = city,
             salary = vacancyDto.salary?.let { map(it) },
-            logo = vacancyDto.logo
+            logo = logo
         )
     }
     private fun map(salaryDto: VacancyCardSalaryDto): Salary {

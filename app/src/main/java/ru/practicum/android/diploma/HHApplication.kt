@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
+import ru.practicum.android.diploma.di.ViewModelModule
 import ru.practicum.android.diploma.di.dataModule
 import ru.practicum.android.diploma.di.interactorModule
 import ru.practicum.android.diploma.di.repositoryModule
@@ -25,6 +26,7 @@ class HHApplication : Application() {
                 vacancySearchModule,
                 favoritesModule,
                 filterModule,
+                ViewModelModule
             )
         }
     }
