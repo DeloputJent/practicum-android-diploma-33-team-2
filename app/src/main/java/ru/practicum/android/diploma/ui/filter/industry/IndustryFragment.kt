@@ -43,7 +43,7 @@ class IndustryFragment : Fragment() {
             clickListener = { industryName ->
                 run {
                     binding.buttonApplyIndustryFilter.visibility = View.VISIBLE
-
+                    viewModel.chooseSelectedIndustry(industryName)
                 }
             }
         )
@@ -73,6 +73,7 @@ class IndustryFragment : Fragment() {
         })
 
         binding.buttonApplyIndustryFilter.setOnClickListener {
+            viewModel.saveSelectedIndustry()
             findNavController().navigate(R.id.action_industryFragment_to_filterFragment)
         }
 

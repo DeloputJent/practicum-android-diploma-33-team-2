@@ -10,7 +10,7 @@ import ru.practicum.android.diploma.domain.filter.models.FilterIndustry
 class IndustryScrollViewHolder(private val binding: ItemIndustryBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(industryName: FilterIndustry) {
-        binding.textIndustryName.text = industryName.name.trim()
+        binding.textIndustryName.text = industryName.name?.trim()
         setFlag(industryName.flagOfSelection)
     }
 

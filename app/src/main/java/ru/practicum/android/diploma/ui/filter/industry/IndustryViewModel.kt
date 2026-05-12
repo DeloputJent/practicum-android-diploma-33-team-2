@@ -6,21 +6,37 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.filter.api.FilterSettingsInteractor
 import ru.practicum.android.diploma.domain.filter.api.SearchWithFilterInteractor
 import ru.practicum.android.diploma.domain.filter.models.FilterIndustry
 import ru.practicum.android.diploma.util.ErrorKind
 import ru.practicum.android.diploma.util.Resource
 
-class IndustryViewModel(private val interactor: SearchWithFilterInteractor,) : ViewModel() {
+class IndustryViewModel(
+    private val interactor: SearchWithFilterInteractor,
+    private val saveFilter: FilterSettingsInteractor,
+) : ViewModel() {
+    init {
+        observeIndustryList()
+    }
     private val _state = MutableStateFlow<IndustryListScreenState>(IndustryListScreenState.Loading)
     val state: StateFlow<IndustryListScreenState> = _state.asStateFlow()
     var industryScroll : MutableList<FilterIndustry> = mutableListOf()
     var filteredScroll : MutableList<FilterIndustry> = mutableListOf()
+    private var selectedIndustry = FilterIndustry()
 
-    //var selectedIndustry : FilterIndustry = FilterIndustry()
+    fun chooseSelectedIndustry(selectedIndustry: FilterIndustry){
+        this.selectedIndustry = selectedIndustry
+    }
 
-    init {
-        observeIndustryList()
+    fun saveSelectedIndustry(){
+        val filterSet = saveFilter.getFilterSettings()
+        saveFilter.updateFilterSettings(
+            filterSet.copy(
+                industryId = selectedIndustry.id?.toInt(),
+                industryName = selectedIndustry.name,
+            )
+        )
     }
 
     fun observeFilteredScroll(query:String) {
@@ -52,11 +68,10 @@ class IndustryViewModel(private val interactor: SearchWithFilterInteractor,) : V
             }
         }
     }
-
     private fun filteredByText(string: String): MutableList<FilterIndustry> {
         val filteredList : MutableList<FilterIndustry> = mutableListOf()
         industryScroll.forEach{
-            if (it.name.contains(string)) filteredList.add(it)
+            if (it.name?.contains(string) ?:false ) filteredList.add(it)
         }
         return filteredList
     }

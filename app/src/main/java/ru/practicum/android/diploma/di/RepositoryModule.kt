@@ -18,7 +18,6 @@ import ru.practicum.android.diploma.domain.filter.api.SearchWithFilterRepository
 import ru.practicum.android.diploma.domain.search.api.SearchRepository
 
 val repositoryModule = module {
-
     single<FavoriteVacancyRepository> {
         FavoriteVacancyRepositoryImpl(get(), get())
     }

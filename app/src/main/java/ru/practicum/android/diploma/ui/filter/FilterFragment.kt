@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.ui.filter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterBinding
+import ru.practicum.android.diploma.domain.filter.models.FilterSettings
+
 class FilterFragment : Fragment() {
     private lateinit var viewModel: FilterViewModel
     private var _binding: FragmentFilterBinding? = null
@@ -32,6 +35,9 @@ class FilterFragment : Fragment() {
         binding.buttonGoBack.setOnClickListener {
             findNavController().navigateUp()
         }
+        viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
+            renderSettings(it)
+        }
 
         binding.buttonAddWorkPlaceFilter.setOnClickListener {}
 
@@ -48,9 +54,7 @@ class FilterFragment : Fragment() {
                     binding.editWantedSalary.addTextChangedListener(this)
                 }
             }
-
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (!p0.isNullOrEmpty()) {
                     binding.buttonClearSalaryInput.visibility = View.VISIBLE
@@ -68,7 +72,12 @@ class FilterFragment : Fragment() {
 
         binding.editWantedSalary.setOnEditorActionListener { _, actionId, _ ->
             val action = actionId == EditorInfo.IME_ACTION_DONE
-            if (action) binding.editWantedSalary.clearFocus()
+            if (action) {
+                binding.editWantedSalary.clearFocus()
+                viewModel.filterSettings = viewModel.filterSettings.copy(
+                    salary = binding.editWantedSalary.text.toString().toInt()
+                )
+            }
             false
         }
 
@@ -77,29 +86,37 @@ class FilterFragment : Fragment() {
         }
 
         binding.textOnlyWithSalaryCheckBox.setOnClickListener {
-            viewModel.isCheckedOnlyWithSalary = !viewModel.isCheckedOnlyWithSalary
-            viewModel.isOnlyWithSalaryLiveData.value = viewModel.isCheckedOnlyWithSalary
-
-            val drawableResourceId = if (viewModel.isCheckedOnlyWithSalary) {
-                R.drawable.ic_check_box_on__24dp
-            } else {
-                R.drawable.ic_check_box_off__24dp
-            }
-
-            binding.textOnlyWithSalaryCheckBox.setCompoundDrawablesWithIntrinsicBounds(
-                null,
-                null,
-                ContextCompat.getDrawable(requireContext(), drawableResourceId),
-                null
+            viewModel.filterSettings = viewModel.filterSettings.copy(
+                onlyWithSalary = !viewModel.filterSettings.onlyWithSalary
             )
         }
 
-        binding.buttonApplyFilterParameters.setOnClickListener { }
+        binding.buttonApplyFilterParameters.setOnClickListener {
+            viewModel.saveFilterSettings()
+        }
 
         binding.buttonDropFilterParameters.setOnClickListener {
             dropWorkAreaFilter()
             dropIndustryFilter()
+            viewModel.clearFilterSettings()
         }
+    }
+
+    private fun renderSettings(settings: FilterSettings) {
+        Log.d("set", "industryName ${settings.industryName}")
+        setIndustryFilter(settings.industryName?:"")
+        binding.editWantedSalary.setText(settings.salary.toString())
+        val drawableResourceId = if (settings.onlyWithSalary) {
+            R.drawable.ic_check_box_on__24dp
+        } else {
+            R.drawable.ic_check_box_off__24dp
+        }
+        binding.textOnlyWithSalaryCheckBox.setCompoundDrawablesWithIntrinsicBounds(
+                null,
+                null,
+                ContextCompat.getDrawable(requireContext(), drawableResourceId),
+                null
+        )
     }
 
     private fun isWantedSalaryFieldHasFocus(hasFocus: Boolean) {

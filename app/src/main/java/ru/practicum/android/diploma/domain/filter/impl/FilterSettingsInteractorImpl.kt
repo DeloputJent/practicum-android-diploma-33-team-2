@@ -13,4 +13,7 @@ class FilterSettingsInteractorImpl(
     override fun updateFilterSettings(settings: FilterSettings) {
        repository.updateFilterSettings(settings)
     }
+    override fun clearFilterSettings() {
+        repository.clearFilterSettings()
+    }
 }

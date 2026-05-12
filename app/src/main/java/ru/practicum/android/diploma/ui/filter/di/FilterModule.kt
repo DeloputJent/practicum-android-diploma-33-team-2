@@ -7,9 +7,12 @@ import ru.practicum.android.diploma.ui.filter.industry.IndustryViewModel
 
 val filterModule = module {
     viewModel {
-        FilterViewModel()
+        FilterViewModel(get())
     }
     viewModel {
-        IndustryViewModel(get())
+        IndustryViewModel(
+            get(),
+            saveFilter = get()
+        )
     }
 }
