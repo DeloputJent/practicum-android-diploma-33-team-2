@@ -7,11 +7,14 @@ import ru.practicum.android.diploma.domain.detail.api.SharingInteractor
 import ru.practicum.android.diploma.domain.detail.api.VacancyDetailInteractor
 import ru.practicum.android.diploma.domain.detail.impl.SharingInteractorImpl
 import ru.practicum.android.diploma.domain.detail.impl.VacancyDetailInteractorImpl
+import ru.practicum.android.diploma.domain.filter.api.FilterSettingsInteractor
+import ru.practicum.android.diploma.domain.filter.api.SearchWithFilterInteractor
+import ru.practicum.android.diploma.domain.filter.impl.FilterSettingsInteractorImpl
+import ru.practicum.android.diploma.domain.filter.impl.SearchWithFilterInteractorImpl
 import ru.practicum.android.diploma.domain.search.api.SearchInteractor
 import ru.practicum.android.diploma.domain.search.impl.SearchInteractorImpl
 
 val interactorModule = module {
-
     single<FavoriteVacancyInteractor> {
         FavoriteVacancyInteractorImpl(get())
     }
@@ -24,5 +27,10 @@ val interactorModule = module {
     single<SharingInteractor> {
         SharingInteractorImpl(get())
     }
-
+    single<SearchWithFilterInteractor> {
+        SearchWithFilterInteractorImpl(get())
+    }
+    single<FilterSettingsInteractor> {
+        FilterSettingsInteractorImpl(get())
+    }
 }

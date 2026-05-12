@@ -1,5 +1,7 @@
 package ru.practicum.android.diploma.ui.vacancy
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,36 +16,37 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.domain.search.api.SearchInteractor
+import ru.practicum.android.diploma.domain.filter.api.FilterSettingsInteractor
+import ru.practicum.android.diploma.domain.filter.api.SearchWithFilterInteractor
+import ru.practicum.android.diploma.domain.filter.models.FilterSettings
 import ru.practicum.android.diploma.domain.search.models.VacancyShort
 import ru.practicum.android.diploma.util.ErrorKind
 import ru.practicum.android.diploma.util.Resource
 
 class VacancySearchViewModel(
-    private val searchInteractor: SearchInteractor,
     private val debounceMs: Long,
+    private val filterStorage: FilterSettingsInteractor,
+    private val searchWithFilterInteractor: SearchWithFilterInteractor,
 ) : ViewModel() {
-
+    val filterSettingsLiveData = MutableLiveData<FilterSettings>()
+    fun observeFilterSettingsState(): LiveData<FilterSettings> = filterSettingsLiveData
     private val queryFlow = MutableStateFlow("")
     private val _state = MutableStateFlow<VacancySearchUiState>(VacancySearchUiState.Initial)
     val state: StateFlow<VacancySearchUiState> = _state.asStateFlow()
-
     private val _isNextPageLoading = MutableStateFlow(false)
     val isNextPageLoading: StateFlow<Boolean> = _isNextPageLoading.asStateFlow()
-
     private val _toast = MutableSharedFlow<String>()
     val toast: SharedFlow<String> = _toast.asSharedFlow()
-
     private var currentQuery = ""
     private var currentPage = 0
     private var maxPages = 0
-
     private val loadedPages = mutableSetOf<Int>()
     private val vacancyIds = mutableSetOf<String>()
     private val vacancies = mutableListOf<VacancyShort>()
 
     init {
         observeQuery()
+        getStoragedFilterSettings()
     }
 
     fun onQueryChanged(query: String) {
@@ -108,7 +111,13 @@ class VacancySearchViewModel(
 
         startLoading(isFirstPage)
         viewModelScope.launch {
-            val result = searchInteractor.searchVacancies(currentQuery, page)
+            val result = searchWithFilterInteractor.getFilteredVacancy(
+                currentQuery,
+                page,
+                filterSettingsLiveData.value?.industryId,
+                filterSettingsLiveData.value?.salary,
+                filterSettingsLiveData.value?.onlyWithSalary ?: false
+            )
             stopLoading()
             handleResult(result, page, isFirstPage)
         }
@@ -183,5 +192,16 @@ class VacancySearchViewModel(
                 _toast.emit("Произошла ошибка")
             }
         }
+    }
+
+    fun saveSearchToStorage(search: String) {
+        if (!search.isEmpty()) {
+            filterSettingsLiveData.value = filterSettingsLiveData.value?.copy(searchField = search)
+            filterStorage.updateFilterSettings(filterSettingsLiveData.value!!)
+        }
+    }
+
+    fun getStoragedFilterSettings() {
+        filterSettingsLiveData.value = filterStorage.getFilterSettings()
     }
 }

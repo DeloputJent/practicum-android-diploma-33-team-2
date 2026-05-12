@@ -59,4 +59,5 @@
     <string name="description_back">Назад</string>
     <string name="description_home">Домой</string>
     <string name="description_recent">Недавнее</string>
+    <string name="team_team">Наша команда:\n - Александр Попов\n - Евгений Устюжанин</string>
 </resources>

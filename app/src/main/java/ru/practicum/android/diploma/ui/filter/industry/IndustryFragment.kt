@@ -7,16 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterIndustryBinding
-import ru.practicum.android.diploma.presentation.favorites.IndustryScrollAdapter
+import ru.practicum.android.diploma.presentation.filter.IndustryScrollAdapter
 
 class IndustryFragment : Fragment() {
-    private lateinit var viewModel: IndustryViewModel
+    private val viewModel by viewModel<IndustryViewModel>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var industryNamesAdapter: IndustryScrollAdapter
     private var _binding: FragmentFilterIndustryBinding? = null
@@ -31,11 +35,33 @@ class IndustryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = getViewModel()
-
         recyclerView = binding.industryRecyclerView
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        industryNamesAdapter = IndustryScrollAdapter(
+            clickListener = { industryName ->
+                run {
+                    binding.buttonApplyIndustryFilter.visibility = View.VISIBLE
+                    viewModel.chooseSelectedIndustry(industryName)
+                }
+            }
+        )
+        recyclerView.adapter = industryNamesAdapter
+
+        binding.editWantedIndustry.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                viewModel.observeFilteredScroll(p0.toString())
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        })
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state -> setScreenState(state) }
+            }
+        }
 
         binding.editWantedIndustry.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -46,13 +72,8 @@ class IndustryFragment : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
         })
 
-        industryNamesAdapter = IndustryScrollAdapter(
-            clickListener = { industryName ->
-            }
-        )
-        recyclerView.adapter = industryNamesAdapter
-
         binding.buttonApplyIndustryFilter.setOnClickListener {
+            viewModel.saveSelectedIndustry()
             findNavController().navigate(R.id.action_industryFragment_to_filterFragment)
         }
 
@@ -64,6 +85,33 @@ class IndustryFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setScreenState(state: IndustryListScreenState) {
+        when (state) {
+            IndustryListScreenState.Loading -> {
+                binding.apply {
+                    layoutNoResponse.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                }
+            }
+            is IndustryListScreenState.Content -> {
+                binding.apply {
+                    layoutNoResponse.visibility = View.GONE
+                    progressBar.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                }
+                industryNamesAdapter.setIndustryNamesList(state.industryList)
+            }
+            IndustryListScreenState.ServerError -> {
+                binding.apply {
+                    layoutNoResponse.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                    recyclerView.visibility = View.GONE
+                }
+            }
+        }
     }
 
     private fun setClearButtonOnField(fieldHasText: Boolean) {

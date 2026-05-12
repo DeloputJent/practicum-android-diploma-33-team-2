@@ -1,8 +1,10 @@
 package ru.practicum.android.diploma.ui.vacancy
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -33,7 +35,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val buttonFilter = view.findViewById<View>(R.id.buttonFilter)
+        val buttonFilter = view.findViewById<ImageButton>(R.id.buttonFilter)
         val editInput = view.findViewById<EditText>(R.id.editInputToSearch)
         val inputIcon = view.findViewById<ImageView>(R.id.imageEditSign)
         val amountText = view.findViewById<TextView>(R.id.textAmountOfFounded)
@@ -46,6 +48,15 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
 
         recycler.adapter = vacancyAdapter
         recycler.layoutManager = LinearLayoutManager(requireContext())
+
+        viewModel.getStoragedFilterSettings()
+        viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
+            // editInput.setText(it.searchField)
+        }
+
+        viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
+            updateFilterIcon(!it.isSettingsEmpty(), buttonFilter)
+        }
 
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -161,6 +172,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         }
 
         buttonFilter.setOnClickListener {
+            viewModel.saveSearchToStorage(editInput.text.toString())
             findNavController().navigate(R.id.action_vacancySearchFragment_to_filterFragment)
         }
     }
@@ -186,6 +198,18 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         } else {
             inputIcon.setImageResource(R.drawable.ic_search_24dp)
             inputIcon.setOnClickListener(null)
+        }
+    }
+
+    private fun updateFilterIcon(
+        filterSet: Boolean,
+        buttonFilter: ImageButton
+    ) {
+        Log.d("set", "SettingsEmpty=$filterSet")
+        if (filterSet) {
+            buttonFilter.setImageResource(R.drawable.ic_filter_on_24dp)
+        } else {
+            buttonFilter.setImageResource(R.drawable.ic_filter_off_24dp)
         }
     }
 }
