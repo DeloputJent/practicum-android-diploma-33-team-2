@@ -34,13 +34,11 @@ class FilterFragment : Fragment() {
         viewModel.getStoragedFilterSettings()
 
         binding.buttonGoBack.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().navigate(R.id.action_filterFragment_to_vacancySearchFragment)
         }
         viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
             renderSettings(it)
         }
-
-        binding.buttonAddWorkPlaceFilter.setOnClickListener {}
 
         binding.editWantedSalary.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -71,40 +69,48 @@ class FilterFragment : Fragment() {
             val action = actionId == EditorInfo.IME_ACTION_DONE
             if (action) {
                 binding.editWantedSalary.clearFocus()
-                viewModel.filterSettings = viewModel.filterSettings.copy(
-                    salary = binding.editWantedSalary.text.toString().toInt()
-                )
+                binding.editWantedSalary.text.toString().let {
+                    viewModel.filterSettings = viewModel
+                        .filterSettings
+                        .copy(salary = if (it.isNotEmpty()) it.toInt() else null)
+                    viewModel.updateFilterSettingsLiveData()
+                }
             }
             false
         }
 
         binding.buttonClearSalaryInput.setOnClickListener {
-            binding.editWantedSalary.setText("")
+            binding.editWantedSalary.text.toString().let {
+                viewModel.filterSettings = viewModel
+                    .filterSettings
+                    .copy(salary = if (it.isNotEmpty()) it.toInt() else null)
+                viewModel.updateFilterSettingsLiveData()
+            }
         }
 
         binding.textOnlyWithSalaryCheckBox.setOnClickListener {
+            val onlyWithSalary = !viewModel.filterSettings.onlyWithSalary
             viewModel.filterSettings = viewModel.filterSettings.copy(
-                industryId = viewModel.filterSettings.industryId,
-                industryName = viewModel.filterSettings.industryName,
-                salary = viewModel.filterSettings.salary,
-                onlyWithSalary = !viewModel.filterSettings.onlyWithSalary
+                onlyWithSalary = onlyWithSalary
             )
+            viewModel.updateFilterSettingsLiveData()
         }
 
         binding.buttonApplyFilterParameters.setOnClickListener {
             viewModel.saveFilterSettings()
+            findNavController().navigate(R.id.action_filterFragment_to_vacancySearchFragment)
         }
 
         binding.buttonDropFilterParameters.setOnClickListener {
-            dropIndustryFilter()
             viewModel.clearFilterSettings()
         }
     }
 
     private fun renderSettings(settings: FilterSettings) {
-        Log.d("set", "industryName ${settings.industryName}")
-        setIndustryFilter(settings.industryName?:"")
-        binding.editWantedSalary.setText(settings.salary.toString())
+        if (settings.industryName!=null) setIndustryFilter(settings.industryName)
+        else dropIndustryFilter()
+        if (settings.salary!=null) binding.editWantedSalary.setText(settings.salary.toString())
+        else binding.editWantedSalary.setText("")
         val drawableResourceId = if (settings.onlyWithSalary) {
             R.drawable.ic_check_box_on__24dp
         } else {
@@ -116,7 +122,7 @@ class FilterFragment : Fragment() {
                 ContextCompat.getDrawable(requireContext(), drawableResourceId),
                 null
         )
-        visibilityOfFilterButtons(settings.isSettingsEmpty())
+        visibilityOfFilterButtons(!settings.isSettingsEmpty())
     }
 
     private fun isWantedSalaryFieldHasFocus(hasFocus: Boolean) {
@@ -147,11 +153,10 @@ class FilterFragment : Fragment() {
         }
     }
 
-    private fun setIndustryFilter(industryName: String) {
+    private fun setIndustryFilter(industryName: String?) {
         binding.apply {
-            //textHintIndustry.visibility = View.VISIBLE
             textSelectedIndustry.text = industryName
-            //textHintSelectIndustry.visibility = View.GONE
+            textHintSelectIndustry.visibility = View.GONE
             imageIndustryGoClear.setImageResource(R.drawable.ic_close_24dp)
             viewButtonSelectIndustry.visibility = View.VISIBLE
             buttonAddIndustryFilter.setOnClickListener {dropIndustryFilter()}
@@ -168,6 +173,20 @@ class FilterFragment : Fragment() {
                 findNavController().navigate(R.id.action_filterFragment_to_industryFragment)
             }
         }
+    }
+
+    private fun checkBox(onlyWithSalary: Boolean){
+        val drawableResourceId = if (onlyWithSalary) {
+            R.drawable.ic_check_box_on__24dp
+        } else {
+            R.drawable.ic_check_box_off__24dp
+        }
+        binding.textOnlyWithSalaryCheckBox.setCompoundDrawablesWithIntrinsicBounds(
+            null,
+            null,
+            ContextCompat.getDrawable(requireContext(), drawableResourceId),
+            null
+        )
     }
 
     override fun onDestroyView() {
