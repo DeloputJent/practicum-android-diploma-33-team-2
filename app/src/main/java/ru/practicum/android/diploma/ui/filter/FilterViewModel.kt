@@ -20,7 +20,13 @@ class FilterViewModel(private val filterStorage: FilterSettingsInteractor,) : Vi
 
     fun clearFilterSettings() {
         filterStorage.clearFilterSettings()
-        filterSettings = FilterSettings()
+        filterSettings = filterSettings.copy(
+            searchField = filterSettings.searchField,
+            industryId = null,
+            industryName = null,
+            salary = null,
+            onlyWithSalary = false
+        )
         updateFilterSettingsLiveData()
     }
 

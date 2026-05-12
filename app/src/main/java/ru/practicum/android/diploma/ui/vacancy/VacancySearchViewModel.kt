@@ -194,6 +194,13 @@ class VacancySearchViewModel(
         }
     }
 
+    fun saveSearchToStorage(search: String) {
+        if (!search.isEmpty()) {
+            filterSettingsLiveData.value = filterSettingsLiveData.value?.copy(searchField = search)
+            filterStorage.updateFilterSettings(filterSettingsLiveData.value!!)
+        }
+    }
+
     fun getStoragedFilterSettings() {
         filterSettingsLiveData.value = filterStorage.getFilterSettings()
     }

@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.ui.vacancy
 
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -48,6 +49,11 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
 
         recycler.adapter = vacancyAdapter
         recycler.layoutManager = LinearLayoutManager(requireContext())
+
+        viewModel.getStoragedFilterSettings()
+        viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
+            //editInput.setText(it.searchField)
+        }
 
         viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
             updateFilterIcon(!it.isSettingsEmpty(), buttonFilter)
@@ -167,6 +173,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         }
 
         buttonFilter.setOnClickListener {
+            viewModel.saveSearchToStorage(editInput.text.toString())
             findNavController().navigate(R.id.action_vacancySearchFragment_to_filterFragment)
         }
     }
