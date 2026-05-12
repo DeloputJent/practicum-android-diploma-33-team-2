@@ -59,7 +59,7 @@ class DetailViewModel(
                 is Resource.Error -> {
                     _state.value = when (result.kind) {
                         ErrorKind.NO_INTERNET -> loadFromCacheOrEmpty(vacancyId)
-                        ErrorKind.SERVER -> VacancyDetailsScreenState.ServerError
+                        ErrorKind.SERVER -> loadFromCacheOrEmpty(vacancyId)
                     }
                 }
             }
