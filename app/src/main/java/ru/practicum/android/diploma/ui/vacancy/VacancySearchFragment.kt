@@ -51,7 +51,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
 
         viewModel.getStoragedFilterSettings()
         viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
-            // editInput.setText(it.searchField)
+            editInput.setText(it.searchField)
         }
 
         viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
