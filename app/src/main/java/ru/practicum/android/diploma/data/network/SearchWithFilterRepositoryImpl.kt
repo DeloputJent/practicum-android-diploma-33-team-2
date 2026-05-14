@@ -35,7 +35,7 @@ class SearchWithFilterRepositoryImpl(
                     else -> {
                         val json = response.body()?.string()
                         if (json.isNullOrEmpty()) {
-                            Resource.Error(ErrorKind<IndustryListResult>.NO_INTERNET)
+                            Resource.Error<IndustryListResult>(ErrorKind.NO_INTERNET)
                         } else {
                             val dtoList: List<FilterIndustryDto> = gson.fromJson(
                                 json,
@@ -48,11 +48,11 @@ class SearchWithFilterRepositoryImpl(
                     }
                 }
             } catch (_: JsonIOException) {
-                Resource.Error<IndustryListResult>(ErrorKind<IndustryListResult>.SERVER)
+                Resource.Error<IndustryListResult>(ErrorKind.SERVER)
             } catch (_: IOException) {
-                Resource.Error<IndustryListResult>(ErrorKind<IndustryListResult>.NO_INTERNET)
+                Resource.Error<IndustryListResult>(ErrorKind.NO_INTERNET)
             } catch (_: Exception) {
-                Resource.Error<IndustryListResult>(ErrorKind<IndustryListResult>.SERVER)
+                Resource.Error<IndustryListResult>(ErrorKind.SERVER)
             }
         }
     }
@@ -65,7 +65,7 @@ class SearchWithFilterRepositoryImpl(
         onlyWithSalary: Boolean,
     ): Resource<SearchResult> {
         val filterOptions: HashMap<String, String> = HashMap()
-        filterOptions["query"] = query
+        filterOptions["text"] = query
         filterOptions["page"] = page.toString()
         if (industryId != null) {
             filterOptions["industry"] = industryId.toString()
@@ -86,7 +86,7 @@ class SearchWithFilterRepositoryImpl(
                     else -> {
                         val json = response.body()?.string()
                         if (json.isNullOrEmpty()) {
-                            Resource.Error(ErrorKind<SearchResult>.NO_INTERNET)
+                            Resource.Error<SearchResult>(ErrorKind.NO_INTERNET)
                         } else {
                             val dto = gson.fromJson(json, VacanciesSearchResponseDto::class.java)
                             Resource.Success(converter.map(dto))
@@ -94,11 +94,11 @@ class SearchWithFilterRepositoryImpl(
                     }
                 }
             } catch (_: JsonIOException) {
-                Resource.Error<SearchResult>(ErrorKind<SearchResult>.SERVER)
+                Resource.Error<SearchResult>(ErrorKind.SERVER)
             } catch (_: IOException) {
-                Resource.Error<SearchResult>(ErrorKind<SearchResult>.NO_INTERNET)
+                Resource.Error<SearchResult>(ErrorKind.NO_INTERNET)
             } catch (_: Exception) {
-                Resource.Error<SearchResult>(ErrorKind<SearchResult>.SERVER)
+                Resource.Error<SearchResult>(ErrorKind.SERVER)
             }
         }
     }
