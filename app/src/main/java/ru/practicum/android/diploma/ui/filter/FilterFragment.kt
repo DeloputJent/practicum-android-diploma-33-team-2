@@ -33,7 +33,7 @@ class FilterFragment : Fragment() {
         viewModel.getStoragedFilterSettings()
 
         binding.buttonGoBack.setOnClickListener {
-            findNavController().navigate(R.id.action_filterFragment_to_vacancySearchFragment)
+            findNavController().popBackStack()
         }
         viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
             renderSettings(it)
@@ -96,13 +96,24 @@ class FilterFragment : Fragment() {
         }
 
         binding.buttonApplyFilterParameters.setOnClickListener {
-            viewModel.saveFilterSettings()
-            findNavController().navigate(R.id.action_filterFragment_to_vacancySearchFragment)
+            binding.editWantedSalary.text.toString().let {
+                viewModel.filterSettings = viewModel.filterSettings.copy(
+                    salary = if (it.isNotEmpty()) it.toInt() else null
+                )
+            }
+            viewModel.updateFilterSettingsLiveData()
+            findNavController().previousBackStackEntry?.savedStateHandle?.set("apply_filters", true)
+            findNavController().popBackStack()
         }
 
         binding.buttonDropFilterParameters.setOnClickListener {
             viewModel.clearFilterSettings()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getStoragedFilterSettings()
     }
 
     private fun renderSettings(settings: FilterSettings) {

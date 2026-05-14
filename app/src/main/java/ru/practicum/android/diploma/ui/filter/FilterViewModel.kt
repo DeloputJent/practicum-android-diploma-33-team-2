@@ -11,10 +11,8 @@ class FilterViewModel(private val filterStorage: FilterSettingsInteractor,) : Vi
     val filterSettingsLiveData = MutableLiveData<FilterSettings>(filterSettings)
     fun observeFilterSettingsState(): LiveData<FilterSettings> = filterSettingsLiveData
 
-    fun saveFilterSettings() {
-        filterStorage.updateFilterSettings(filterSettings)
-    }
     fun updateFilterSettingsLiveData() {
+        filterStorage.updateFilterSettings(filterSettings)
         filterSettingsLiveData.value = filterSettings
     }
 

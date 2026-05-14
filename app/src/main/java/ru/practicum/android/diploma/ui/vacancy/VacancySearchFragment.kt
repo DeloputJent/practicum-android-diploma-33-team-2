@@ -1,7 +1,6 @@
 package ru.practicum.android.diploma.ui.vacancy
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -50,13 +49,19 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         recycler.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.getStoragedFilterSettings()
-        viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
-            editInput.setText(it.searchField)
-        }
-
+        editInput.setText(viewModel.observeFilterSettingsState().value?.searchField.orEmpty())
         viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
             updateFilterIcon(!it.isSettingsEmpty(), buttonFilter)
         }
+
+        findNavController().currentBackStackEntry?.savedStateHandle
+            ?.getLiveData<Boolean>("apply_filters")
+            ?.observe(viewLifecycleOwner) { applied ->
+                if (applied == true) {
+                    findNavController().currentBackStackEntry?.savedStateHandle?.remove<Boolean>("apply_filters")
+                    viewModel.onFilterApplied()
+                }
+            }
 
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -177,6 +182,11 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshFilterIconFromStorage()
+    }
+
     private fun openVacancyDetails(vacancyId: String) {
         findNavController().navigate(
             R.id.action_vacancySearchFragment_to_detailFragment,
@@ -205,7 +215,6 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         filterSet: Boolean,
         buttonFilter: ImageButton
     ) {
-        Log.d("set", "SettingsEmpty=$filterSet")
         if (filterSet) {
             buttonFilter.setImageResource(R.drawable.ic_filter_on_24dp)
         } else {
