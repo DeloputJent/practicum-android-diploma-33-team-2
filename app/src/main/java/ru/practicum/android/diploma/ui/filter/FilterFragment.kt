@@ -39,6 +39,10 @@ class FilterFragment : Fragment() {
             renderSettings(it)
         }
 
+        binding.buttonAddIndustryFilter.setOnClickListener {
+            findNavController().navigate(R.id.action_filterFragment_to_industryFragment)
+        }
+
         binding.editWantedSalary.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val text = s.toString()
@@ -164,13 +168,13 @@ class FilterFragment : Fragment() {
             textHintSelectIndustry.visibility = View.GONE
             imageIndustryGoClear.setImageResource(R.drawable.ic_close_24dp)
             viewButtonSelectIndustry.visibility = View.VISIBLE
-            buttonAddIndustryFilter.setOnClickListener {
+            binding.imageIndustryGoClear.setOnClickListener {
                 viewModel.filterSettings = viewModel.filterSettings.copy(
                     industryId = null,
                     industryName = null
                 )
                 viewModel.updateFilterSettingsLiveData()
-                dropIndustryFilter()
+                viewModel.saveFilterSettings()
             }
         }
     }
@@ -181,7 +185,7 @@ class FilterFragment : Fragment() {
             textHintSelectIndustry.visibility = View.VISIBLE
             imageIndustryGoClear.setImageResource(R.drawable.ic_arrow_forward_24dp)
             viewButtonSelectIndustry.visibility = View.GONE
-            buttonAddIndustryFilter.setOnClickListener {
+            binding.imageIndustryGoClear.setOnClickListener {
                 findNavController().navigate(R.id.action_filterFragment_to_industryFragment)
             }
         }
