@@ -16,17 +16,23 @@ class IndustryViewModel(
     private val interactor: SearchWithFilterInteractor,
     private val saveFilter: FilterSettingsInteractor,
 ) : ViewModel() {
-    init {
-        observeIndustryList()
-    }
     private val _state = MutableStateFlow<IndustryListScreenState>(IndustryListScreenState.Loading)
     val state: StateFlow<IndustryListScreenState> = _state.asStateFlow()
     var industryScroll: MutableList<FilterIndustry> = mutableListOf()
     var filteredScroll: MutableList<FilterIndustry> = mutableListOf()
     private var selectedIndustry = FilterIndustry()
-
+    private var preSelectedIndustry = FilterIndustry()
     fun chooseSelectedIndustry(selectedIndustry: FilterIndustry) {
         this.selectedIndustry = selectedIndustry
+    }
+    fun loadPreSelectedIndustryId(){
+        val filter = saveFilter.getFilterSettings()
+        if (filter.industryId!=null) {
+        preSelectedIndustry = preSelectedIndustry.copy(
+            id = filter.industryId.toString(),
+            name = filter.industryName
+        )
+        }
     }
 
     fun saveSelectedIndustry() {
@@ -38,12 +44,10 @@ class IndustryViewModel(
             )
         )
     }
-
     fun observeFilteredScroll(query: String) {
         filteredScroll = filteredByText(query)
         _state.value = IndustryListScreenState.Content(filteredScroll.toList())
     }
-
     fun observeIndustryList() {
         viewModelScope.launch {
             _state.value = IndustryListScreenState.Loading
@@ -54,6 +58,9 @@ class IndustryViewModel(
                         _state.value = IndustryListScreenState.ServerError
                     } else {
                         industryScroll = data.items.toMutableList()
+                        data.items.forEach {
+                            it.flagOfSelection = it==preSelectedIndustry
+                        }
                         _state.value = IndustryListScreenState.Content(data.items)
                     }
                 }

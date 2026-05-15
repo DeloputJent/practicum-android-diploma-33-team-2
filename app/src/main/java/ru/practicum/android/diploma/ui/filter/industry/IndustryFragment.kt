@@ -34,6 +34,8 @@ class IndustryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.observeIndustryList()
+        viewModel.loadPreSelectedIndustryId()
 
         recyclerView = binding.industryRecyclerView
 
