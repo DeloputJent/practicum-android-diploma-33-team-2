@@ -22,4 +22,3 @@ data class VacancyDetailsEntity(
     val url: String,
     val industryName: String,
 )
-

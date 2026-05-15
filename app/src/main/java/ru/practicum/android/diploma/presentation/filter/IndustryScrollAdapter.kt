@@ -15,7 +15,7 @@ class IndustryScrollAdapter(
     override fun onBindViewHolder(holder: IndustryScrollViewHolder, position: Int) {
         holder.bind(industryList[position])
         holder.itemView.setOnClickListener {
-            industryList.forEach { it.flagOfSelection = false}
+            industryList.forEach { it.flagOfSelection = false }
             industryList[position].flagOfSelection = true
             setIndustryNamesList(industryList.toList())
             clickListener(industryList[position])

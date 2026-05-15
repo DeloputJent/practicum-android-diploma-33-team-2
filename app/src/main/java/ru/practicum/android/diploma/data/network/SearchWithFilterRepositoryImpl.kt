@@ -64,17 +64,7 @@ class SearchWithFilterRepositoryImpl(
         salary: Int?,
         onlyWithSalary: Boolean,
     ): Resource<SearchResult> {
-        val filterOptions: HashMap<String, String> = HashMap()
-        filterOptions["text"] = query
-        filterOptions["page"] = page.toString()
-        if (industryId != null) {
-            filterOptions["industry"] = industryId.toString()
-        }
-        if (salary != null) {
-            filterOptions["salary"] = salary.toString()
-        }
-        filterOptions["only_with_salary"] = if (onlyWithSalary) "true" else "false"
-
+        val filterOptions = fillFilterOptions(query, page, industryId, salary, onlyWithSalary)
         return withContext(Dispatchers.IO) {
             try {
                 val response = api.searchVacanciesWithFilters(
@@ -116,6 +106,26 @@ class SearchWithFilterRepositoryImpl(
             NO_RESOURCE_FOUND -> Resource.Error(ErrorKind.NO_INTERNET)
             else -> Resource.Error(ErrorKind.SERVER)
         }
+    }
+
+    fun fillFilterOptions(
+        query: String,
+        page: Int,
+        industryId: Int?,
+        salary: Int?,
+        onlyWithSalary: Boolean
+    ): HashMap<String, String> {
+        val filterOptions: HashMap<String, String> = HashMap()
+        filterOptions["text"] = query
+        filterOptions["page"] = page.toString()
+        if (industryId != null) {
+            filterOptions["industry"] = industryId.toString()
+        }
+        if (salary != null) {
+            filterOptions["salary"] = salary.toString()
+        }
+        filterOptions["only_with_salary"] = if (onlyWithSalary) "true" else "false"
+        return filterOptions
     }
     companion object {
         private const val SERVER_ERROR = 500

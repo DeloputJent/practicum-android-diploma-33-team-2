@@ -6,8 +6,8 @@ import ru.practicum.android.diploma.data.converters.VacancyDbConvertor
 import ru.practicum.android.diploma.data.converters.VacancyDetailsDbConverter
 import ru.practicum.android.diploma.data.db.VacancyDatabase
 import ru.practicum.android.diploma.data.db.entity.VacancyCardEntity
-import ru.practicum.android.diploma.domain.detail.model.VacancyDetails
 import ru.practicum.android.diploma.domain.db.api.FavoriteVacancyRepository
+import ru.practicum.android.diploma.domain.detail.model.VacancyDetails
 import ru.practicum.android.diploma.domain.favorites.models.VacancyCard
 
 class FavoriteVacancyRepositoryImpl(

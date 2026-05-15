@@ -8,9 +8,9 @@ data class FilterSettings(
     val onlyWithSalary: Boolean = false
 ) {
     fun isSettingsEmpty(): Boolean {
-        return ((industryId == null) &&
-            (industryName == null) &&
-            (salary == null) &&
-            (!onlyWithSalary))
+        return industryId == null &&
+            industryName == null &&
+            salary == null &&
+            !onlyWithSalary
     }
 }

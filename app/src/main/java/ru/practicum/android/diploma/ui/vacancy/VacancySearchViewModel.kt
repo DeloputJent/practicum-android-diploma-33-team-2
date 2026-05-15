@@ -61,21 +61,13 @@ class VacancySearchViewModel(
     }
 
     fun onLastItemReached() {
-        if (currentQuery.isBlank()) {
-            return
-        }
-        if (_isNextPageLoading.value) {
+        val nextPage = currentPage + 1
+        if (currentQuery.isBlank() or _isNextPageLoading.value or loadedPages.contains(nextPage)) {
             return
         }
         if (maxPages != 0 && currentPage >= maxPages) {
             return
         }
-
-        val nextPage = currentPage + 1
-        if (loadedPages.contains(nextPage)) {
-            return
-        }
-
         loadPage(page = nextPage, isFirstPage = false)
     }
 
@@ -143,7 +135,11 @@ class VacancySearchViewModel(
         _isNextPageLoading.value = false
     }
 
-    private suspend fun handleResult(result: Resource<ru.practicum.android.diploma.domain.search.models.SearchResult>, page: Int, isFirstPage: Boolean) {
+    private suspend fun handleResult(
+        result: Resource<ru.practicum.android.diploma.domain.search.models.SearchResult>,
+        page: Int,
+        isFirstPage: Boolean,
+    ) {
         if (result is Resource.Success) {
             handleSuccess(result.data, page, isFirstPage)
         } else if (result is Resource.Error) {

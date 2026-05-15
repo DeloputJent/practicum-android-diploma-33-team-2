@@ -28,11 +28,8 @@ class DetailViewModel(
             isVacancyFavoriteLiveData.postValue(favoriteInteractor.getVacanciesId().contains(vacancyId))
         }
     }
-
     fun observeFavoriteState(): LiveData<Boolean> = isVacancyFavoriteLiveData
-
     private val isVacancyFavoriteLiveData = MutableLiveData<Boolean>(false)
-
     private val _state = MutableStateFlow<VacancyDetailsScreenState>(VacancyDetailsScreenState.Loading)
     val state: StateFlow<VacancyDetailsScreenState> = _state.asStateFlow()
 
@@ -65,24 +62,21 @@ class DetailViewModel(
             }
         }
     }
-
     private suspend fun loadFromCacheOrEmpty(vacancyId: String): VacancyDetailsScreenState {
-        val cached = favoriteInteractor.getVacancyDetailsById(vacancyId) ?: return VacancyDetailsScreenState.NothingFound
+        val cached = favoriteInteractor
+            .getVacancyDetailsById(vacancyId) ?: return VacancyDetailsScreenState.NothingFound
         currentVacancy = cached
         return VacancyDetailsScreenState.Content(cached)
     }
-
     fun shareVacancy() {
         sharingInteractor.shareVacancy(currentVacancy!!.url)
     }
     fun contactByMail() {
         sharingInteractor.sendMail(currentVacancy!!.contactsEmail!!)
     }
-
     fun callContactPhone(num: String) {
         sharingInteractor.makeCall(num)
     }
-
     fun onFavoriteClicked() {
         val isFavorite = isVacancyFavoriteLiveData.value ?: false
         isVacancyFavoriteLiveData.value = !isFavorite
@@ -98,7 +92,6 @@ class DetailViewModel(
             }
         }
     }
-
     private fun convertToVacancyCard(vacancy: VacancyDetails): VacancyCard {
         return VacancyCard(
             id = vacancy.id,

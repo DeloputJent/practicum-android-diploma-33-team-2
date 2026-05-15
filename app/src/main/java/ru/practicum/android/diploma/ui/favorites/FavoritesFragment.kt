@@ -48,25 +48,42 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         recyclerView.adapter = adapter
 
         viewModel.load()
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.vacancies.collect { list ->
-                    adapter.submitList(list)
-                    renderEmptyState(list.isEmpty())
-                }
+                viewModel.state.collect { state -> setScreenState(state) }
             }
         }
     }
 
-    private fun renderEmptyState(isEmpty: Boolean) {
-        if (isEmpty) {
-            binding.recyclerFavourites.visibility = View.GONE
-            binding.layoutNoVacancy.visibility = View.VISIBLE
-        } else {
-            binding.recyclerFavourites.visibility = View.VISIBLE
-            binding.layoutNoVacancy.visibility = View.GONE
+    private fun setScreenState(state: FavouritesScreenState) {
+        when (state) {
+            FavouritesScreenState.Loading -> {
+                binding.apply {
+                    progressBar.visibility = View.VISIBLE
+                    layoutLoadError.visibility = View.GONE
+                    layoutNoVacancy.visibility = View.GONE
+                    recyclerFavourites.visibility = View.GONE
+                }
+            }
+            is FavouritesScreenState.Content -> {
+                binding.apply {
+                    progressBar.visibility = View.GONE
+                    layoutLoadError.visibility = View.GONE
+                    layoutNoVacancy.visibility = View.GONE
+                    recyclerFavourites.visibility = View.VISIBLE
+                }
+                adapter.submitList(state.listOfFavourites)
+            }
+            FavouritesScreenState.NothingFound -> {
+                binding.apply {
+                    progressBar.visibility = View.GONE
+                    layoutLoadError.visibility = View.GONE
+                    layoutNoVacancy.visibility = View.VISIBLE
+                    recyclerFavourites.visibility = View.GONE
+                }
+            }
         }
-        binding.layoutLoadError.visibility = View.GONE
     }
 
     override fun onDestroyView() {

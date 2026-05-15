@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.ui.vacancy
 
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -81,6 +82,19 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
             val value = text?.toString().orEmpty()
             viewModel.onQueryChanged(value)
             updateInputIcon(value.isNotBlank(), inputIcon, editInput)
+        }
+
+        editInput.setOnEditorActionListener { _, actionId, _ ->
+            val action = actionId == EditorInfo.IME_ACTION_DONE
+            if (action) {
+                val value = editInput.text?.toString().orEmpty()
+                if (value.isNotBlank()) {
+                    viewModel.onQueryChanged(value)
+                } else {
+                    viewModel.onQueryChanged("")
+                }
+            }
+            false
         }
 
         updateInputIcon(false, inputIcon, editInput)

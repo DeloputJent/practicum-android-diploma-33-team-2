@@ -8,22 +8,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.db.api.FavoriteVacancyInteractor
-import ru.practicum.android.diploma.domain.favorites.models.VacancyCard
 
 class FavoritesViewModel(
     private val interactor: FavoriteVacancyInteractor,
 ) : ViewModel() {
-
-    private val _vacancies = MutableStateFlow<List<VacancyCard>>(emptyList())
-    val vacancies: StateFlow<List<VacancyCard>> = _vacancies.asStateFlow()
-
+    private val _state = MutableStateFlow<FavouritesScreenState>(FavouritesScreenState.Loading)
+    val state: StateFlow<FavouritesScreenState> = _state.asStateFlow()
     private var loadJob: Job? = null
-
     fun load() {
         if (loadJob != null) return
         loadJob = viewModelScope.launch {
+            _state.value = FavouritesScreenState.Loading
             interactor.getVacancies().collect { list ->
-                _vacancies.value = list
+                if (list.isNullOrEmpty()) {
+                    _state.value = FavouritesScreenState.NothingFound
+                } else {
+                    _state.value = FavouritesScreenState.Content(list)
+                }
             }
         }
     }

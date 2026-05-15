@@ -11,15 +11,10 @@ import ru.practicum.android.diploma.domain.filter.api.FilterSettingsInteractor
 import ru.practicum.android.diploma.domain.filter.api.SearchWithFilterInteractor
 import ru.practicum.android.diploma.domain.filter.impl.FilterSettingsInteractorImpl
 import ru.practicum.android.diploma.domain.filter.impl.SearchWithFilterInteractorImpl
-import ru.practicum.android.diploma.domain.search.api.SearchInteractor
-import ru.practicum.android.diploma.domain.search.impl.SearchInteractorImpl
 
 val interactorModule = module {
     single<FavoriteVacancyInteractor> {
         FavoriteVacancyInteractorImpl(get())
-    }
-    single<SearchInteractor> {
-        SearchInteractorImpl(get())
     }
     single<VacancyDetailInteractor> {
         VacancyDetailInteractorImpl(get())

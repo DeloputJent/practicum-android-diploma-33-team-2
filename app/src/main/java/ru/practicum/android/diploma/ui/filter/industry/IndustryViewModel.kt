@@ -25,16 +25,15 @@ class IndustryViewModel(
     fun chooseSelectedIndustry(selectedIndustry: FilterIndustry) {
         this.selectedIndustry = selectedIndustry
     }
-    fun loadPreSelectedIndustryId(){
+    fun loadPreSelectedIndustryId() {
         val filter = saveFilter.getFilterSettings()
-        if (filter.industryId!=null) {
-        preSelectedIndustry = preSelectedIndustry.copy(
-            id = filter.industryId.toString(),
-            name = filter.industryName
-        )
+        if (filter.industryId != null) {
+            preSelectedIndustry = preSelectedIndustry.copy(
+                id = filter.industryId.toString(),
+                name = filter.industryName
+            )
         }
     }
-
     fun saveSelectedIndustry() {
         val filterSet = saveFilter.getFilterSettings()
         saveFilter.updateFilterSettings(
@@ -59,7 +58,7 @@ class IndustryViewModel(
                     } else {
                         industryScroll = data.items.toMutableList()
                         data.items.forEach {
-                            it.flagOfSelection = it==preSelectedIndustry
+                            it.flagOfSelection = it == preSelectedIndustry
                         }
                         _state.value = IndustryListScreenState.Content(data.items)
                     }
