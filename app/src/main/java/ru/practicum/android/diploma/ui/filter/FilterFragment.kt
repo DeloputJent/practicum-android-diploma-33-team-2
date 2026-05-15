@@ -33,7 +33,7 @@ class FilterFragment : Fragment() {
         viewModel.getStoragedFilterSettings()
 
         binding.buttonGoBack.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().popBackStack(R.id.vacancySearchFragment, false)
         }
         viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
             renderSettings(it)
@@ -102,8 +102,8 @@ class FilterFragment : Fragment() {
                 )
             }
             viewModel.updateFilterSettingsLiveData()
-            findNavController().previousBackStackEntry?.savedStateHandle?.set("apply_filters", true)
-            findNavController().popBackStack()
+            findNavController().getBackStackEntry(R.id.vacancySearchFragment).savedStateHandle["apply_filters"] = true
+            findNavController().popBackStack(R.id.vacancySearchFragment, false)
         }
 
         binding.buttonDropFilterParameters.setOnClickListener {
