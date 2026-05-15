@@ -185,7 +185,6 @@ class FilterFragment : Fragment() {
                     industryName = null
                 )
                 viewModel.updateFilterSettingsLiveData()
-                viewModel.saveFilterSettings()
             }
         }
     }
