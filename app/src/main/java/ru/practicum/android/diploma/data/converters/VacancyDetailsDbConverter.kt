@@ -60,4 +60,3 @@ class VacancyDetailsDbConverter(
         return gson.fromJson(json, type)
     }
 }
-

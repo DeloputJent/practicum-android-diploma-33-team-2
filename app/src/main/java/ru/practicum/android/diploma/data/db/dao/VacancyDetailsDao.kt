@@ -17,4 +17,3 @@ interface VacancyDetailsDao {
     @Query("DELETE FROM vacancy_details_table WHERE id = :vacancyId")
     suspend fun deleteById(vacancyId: String)
 }
-

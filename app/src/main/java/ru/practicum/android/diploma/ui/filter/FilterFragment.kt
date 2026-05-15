@@ -86,7 +86,7 @@ class FilterFragment : Fragment() {
             binding.editWantedSalary.text.toString().let {
                 viewModel.filterSettings = viewModel
                     .filterSettings
-                    .copy(salary = if (it.isNotEmpty()) it.toInt() else null)
+                    .copy(salary = null)
                 viewModel.updateFilterSettingsLiveData()
             }
         }
