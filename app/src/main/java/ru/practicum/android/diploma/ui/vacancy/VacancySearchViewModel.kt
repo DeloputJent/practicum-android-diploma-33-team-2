@@ -43,6 +43,9 @@ class VacancySearchViewModel(
     private val loadedPages = mutableSetOf<Int>()
     private val vacancyIds = mutableSetOf<String>()
     private val vacancies = mutableListOf<VacancyShort>()
+    private var sessionIndustryId: Int? = null
+    private var sessionSalary: Int? = null
+    private var sessionOnlyWithSalary: Boolean = false
 
     init {
         observeQuery()
@@ -86,6 +89,11 @@ class VacancySearchViewModel(
                 .collect { query ->
                     resetPaging()
                     currentQuery = query
+                    val stored = filterStorage.getFilterSettings()
+                    filterSettingsLiveData.value = stored
+                    sessionIndustryId = stored.industryId
+                    sessionSalary = stored.salary
+                    sessionOnlyWithSalary = stored.onlyWithSalary
                     loadPage(page = 1, isFirstPage = true)
                 }
         }
@@ -114,9 +122,9 @@ class VacancySearchViewModel(
             val result = searchWithFilterInteractor.getFilteredVacancy(
                 currentQuery,
                 page,
-                filterSettingsLiveData.value?.industryId,
-                filterSettingsLiveData.value?.salary,
-                filterSettingsLiveData.value?.onlyWithSalary ?: false
+                sessionIndustryId,
+                sessionSalary,
+                sessionOnlyWithSalary
             )
             stopLoading()
             handleResult(result, page, isFirstPage)
@@ -195,13 +203,45 @@ class VacancySearchViewModel(
     }
 
     fun saveSearchToStorage(search: String) {
-        if (!search.isEmpty()) {
-            filterSettingsLiveData.value = filterSettingsLiveData.value?.copy(searchField = search)
-            filterStorage.updateFilterSettings(filterSettingsLiveData.value!!)
+        if (search.isEmpty()) {
+            return
         }
+        val base = filterSettingsLiveData.value ?: filterStorage.getFilterSettings()
+        val updated = base.copy(searchField = search)
+        filterSettingsLiveData.value = updated
+        filterStorage.updateFilterSettings(updated)
     }
 
     fun getStoragedFilterSettings() {
+        val s = filterStorage.getFilterSettings()
+        filterSettingsLiveData.value = s
+        sessionIndustryId = s.industryId
+        sessionSalary = s.salary
+        sessionOnlyWithSalary = s.onlyWithSalary
+    }
+
+    fun refreshFilterIconFromStorage() {
         filterSettingsLiveData.value = filterStorage.getFilterSettings()
+    }
+
+    fun onFilterApplied() {
+        val s = filterStorage.getFilterSettings()
+        filterSettingsLiveData.value = s
+        sessionIndustryId = s.industryId
+        sessionSalary = s.salary
+        sessionOnlyWithSalary = s.onlyWithSalary
+        if (currentQuery.isNotBlank()) {
+            reloadCurrentSearchFirstPage()
+        }
+    }
+
+    private fun reloadCurrentSearchFirstPage() {
+        loadedPages.clear()
+        vacancyIds.clear()
+        vacancies.clear()
+        currentPage = 0
+        maxPages = 0
+        _isNextPageLoading.value = false
+        loadPage(page = 1, isFirstPage = true)
     }
 }
