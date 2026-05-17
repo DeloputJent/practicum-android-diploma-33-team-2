@@ -80,9 +80,8 @@ class VacancyAdapter(
         }
 
         private fun loadLogo(rawUrl: String?, imageView: ImageView) {
-            val logoUrl = normalizeLogoUrl(rawUrl)
             Glide.with(binding.imageVacancyLogo)
-                .load(logoUrl)
+                .load(rawUrl)
                 .placeholder(android.R.color.transparent)
                 .error(android.R.color.transparent)
                 .fallback(android.R.color.transparent)
@@ -110,10 +109,6 @@ class VacancyAdapter(
             return DecimalFormat("#,###", symbols).format(value).replace(",", " ")
         }
 
-        private fun normalizeLogoUrl(url: String?): String? {
-            if (url.isNullOrBlank()) return null
-            return if (url.startsWith("//")) "https:$url" else url
-        }
     }
 
     private companion object {

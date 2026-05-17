@@ -32,6 +32,8 @@
     <string name="filter_select_a_region">Выбор региона</string>
     <string name="filter_there_is_no_such_region">Такого региона нет</string>
     <string name="filter_unable_to_retrieve_the_list">Не удалось получить список</string>
+    <string name="filter_select_industry">Выбор отрасли</string>
+    <string name="filter_input_industry">Ввведите отрасль</string>
     <string name="filter_select">Выбрать</string>
     <string name="filter_apply">Применить</string>
     <string name="filter_reset">Сбросить</string>
@@ -57,4 +59,5 @@
     <string name="description_back">Назад</string>
     <string name="description_home">Домой</string>
     <string name="description_recent">Недавнее</string>
+    <string name="team_team">Наша команда:\n - Александр Попов\n - Евгений Устюжанин</string>
 </resources>

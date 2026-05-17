@@ -28,11 +28,8 @@ class DetailViewModel(
             isVacancyFavoriteLiveData.postValue(favoriteInteractor.getVacanciesId().contains(vacancyId))
         }
     }
-
     fun observeFavoriteState(): LiveData<Boolean> = isVacancyFavoriteLiveData
-
     private val isVacancyFavoriteLiveData = MutableLiveData<Boolean>(false)
-
     private val _state = MutableStateFlow<VacancyDetailsScreenState>(VacancyDetailsScreenState.Loading)
     val state: StateFlow<VacancyDetailsScreenState> = _state.asStateFlow()
 
@@ -58,41 +55,43 @@ class DetailViewModel(
                 }
                 is Resource.Error -> {
                     _state.value = when (result.kind) {
-                        ErrorKind.NO_INTERNET -> VacancyDetailsScreenState.NothingFound
-                        ErrorKind.SERVER -> VacancyDetailsScreenState.ServerError
+                        ErrorKind.NO_INTERNET -> loadFromCacheOrEmpty(vacancyId)
+                        ErrorKind.SERVER -> loadFromCacheOrEmpty(vacancyId)
                     }
                 }
             }
         }
     }
-
+    private suspend fun loadFromCacheOrEmpty(vacancyId: String): VacancyDetailsScreenState {
+        val cached = favoriteInteractor
+            .getVacancyDetailsById(vacancyId) ?: return VacancyDetailsScreenState.NothingFound
+        currentVacancy = cached
+        return VacancyDetailsScreenState.Content(cached)
+    }
     fun shareVacancy() {
         sharingInteractor.shareVacancy(currentVacancy!!.url)
     }
     fun contactByMail() {
         sharingInteractor.sendMail(currentVacancy!!.contactsEmail!!)
     }
-
     fun callContactPhone(num: String) {
         sharingInteractor.makeCall(num)
     }
-
     fun onFavoriteClicked() {
         val isFavorite = isVacancyFavoriteLiveData.value ?: false
         isVacancyFavoriteLiveData.value = !isFavorite
         viewModelScope.launch {
             if (isFavorite) {
                 favoriteInteractor.deleteVacancyById(vacancyId)
+                favoriteInteractor.deleteVacancyDetailsById(vacancyId)
             } else {
                 currentVacancy?.let { vacancy ->
-                    favoriteInteractor.insertVacancy(
-                        convertToVacancyCard(vacancy)
-                    )
+                    favoriteInteractor.insertVacancy(convertToVacancyCard(vacancy))
+                    favoriteInteractor.saveVacancyDetails(vacancy)
                 }
             }
         }
     }
-
     private fun convertToVacancyCard(vacancy: VacancyDetails): VacancyCard {
         return VacancyCard(
             id = vacancy.id,

@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface HhApi {
     @GET("vacancies")
@@ -23,4 +24,16 @@ interface HhApi {
         @Path("id") id: String,
     ): Response<ResponseBody>
 
+    @GET("/industries")
+    suspend fun getIndustries(
+        @Header("Authorization") authorization: String,
+        @Header("Content-Type") contentType: String = "application/json",
+    ): Response<ResponseBody>
+
+    @GET("vacancies")
+    suspend fun searchVacanciesWithFilters(
+        @Header("Authorization") authorization: String,
+        @Header("Content-Type") contentType: String = "application/json",
+        @QueryMap filterOptions: Map<String, String>
+    ): Response<ResponseBody>
 }

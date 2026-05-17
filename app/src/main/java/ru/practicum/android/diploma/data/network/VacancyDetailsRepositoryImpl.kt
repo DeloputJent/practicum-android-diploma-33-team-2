@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.data.network
 
 import com.google.gson.Gson
+import com.google.gson.JsonIOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.practicum.android.diploma.BuildConfig
@@ -11,6 +12,7 @@ import ru.practicum.android.diploma.domain.detail.api.VacancyDetailRepository
 import ru.practicum.android.diploma.domain.detail.model.VacancyDetailResult
 import ru.practicum.android.diploma.util.ErrorKind
 import ru.practicum.android.diploma.util.Resource
+import java.io.IOException
 
 class VacancyDetailsRepositoryImpl(
     private val api: HhApi,
@@ -37,7 +39,11 @@ class VacancyDetailsRepositoryImpl(
                         }
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: JsonIOException) {
+                Resource.Error(ErrorKind.SERVER)
+            } catch (_: IOException) {
+                Resource.Error(ErrorKind.NO_INTERNET)
+            } catch (_: Exception) {
                 Resource.Error(ErrorKind.SERVER)
             }
         }

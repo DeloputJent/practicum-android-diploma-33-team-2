@@ -38,7 +38,14 @@
         android:id="@+id/filterFragment"
         android:name="ru.practicum.android.diploma.ui.filter.FilterFragment"
         android:label="Фильтр"
-        tools:layout="@layout/fragment_filter" />
+        tools:layout="@layout/fragment_filter" >
+        <action
+            android:id="@+id/action_filterFragment_to_industryFragment"
+            app:destination="@id/industryFragment" />
+        <action
+            android:id="@+id/action_filterFragment_to_vacancySearchFragment"
+            app:destination="@id/vacancySearchFragment" />
+    </fragment>
     <fragment
         android:id="@+id/detailFragment"
         android:name="ru.practicum.android.diploma.ui.details.DetailFragment"
@@ -47,5 +54,14 @@
         <argument
             android:name="vacancyId"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/industryFragment"
+        android:name="ru.practicum.android.diploma.ui.filter.industry.IndustryFragment"
+        android:label="IndustryFragment"
+        tools:layout="@layout/fragment_filter_industry">
+        <action
+            android:id="@+id/action_industryFragment_to_filterFragment"
+            app:destination="@id/filterFragment" />
     </fragment>
 </navigation>

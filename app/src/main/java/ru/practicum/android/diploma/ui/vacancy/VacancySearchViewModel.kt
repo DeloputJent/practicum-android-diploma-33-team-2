@@ -1,5 +1,7 @@
 package ru.practicum.android.diploma.ui.vacancy
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,36 +16,40 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.domain.search.api.SearchInteractor
+import ru.practicum.android.diploma.domain.filter.api.FilterSettingsInteractor
+import ru.practicum.android.diploma.domain.filter.api.SearchWithFilterInteractor
+import ru.practicum.android.diploma.domain.filter.models.FilterSettings
 import ru.practicum.android.diploma.domain.search.models.VacancyShort
 import ru.practicum.android.diploma.util.ErrorKind
 import ru.practicum.android.diploma.util.Resource
 
 class VacancySearchViewModel(
-    private val searchInteractor: SearchInteractor,
     private val debounceMs: Long,
+    private val filterStorage: FilterSettingsInteractor,
+    private val searchWithFilterInteractor: SearchWithFilterInteractor,
 ) : ViewModel() {
-
+    val filterSettingsLiveData = MutableLiveData<FilterSettings>()
+    fun observeFilterSettingsState(): LiveData<FilterSettings> = filterSettingsLiveData
     private val queryFlow = MutableStateFlow("")
     private val _state = MutableStateFlow<VacancySearchUiState>(VacancySearchUiState.Initial)
     val state: StateFlow<VacancySearchUiState> = _state.asStateFlow()
-
     private val _isNextPageLoading = MutableStateFlow(false)
     val isNextPageLoading: StateFlow<Boolean> = _isNextPageLoading.asStateFlow()
-
     private val _toast = MutableSharedFlow<String>()
     val toast: SharedFlow<String> = _toast.asSharedFlow()
-
     private var currentQuery = ""
     private var currentPage = 0
     private var maxPages = 0
-
     private val loadedPages = mutableSetOf<Int>()
     private val vacancyIds = mutableSetOf<String>()
     private val vacancies = mutableListOf<VacancyShort>()
+    private var sessionIndustryId: Int? = null
+    private var sessionSalary: Int? = null
+    private var sessionOnlyWithSalary: Boolean = false
 
     init {
         observeQuery()
+        getStoragedFilterSettings()
     }
 
     fun onQueryChanged(query: String) {
@@ -55,21 +61,13 @@ class VacancySearchViewModel(
     }
 
     fun onLastItemReached() {
-        if (currentQuery.isBlank()) {
-            return
-        }
-        if (_isNextPageLoading.value) {
+        val nextPage = currentPage + 1
+        if (currentQuery.isBlank() or _isNextPageLoading.value or loadedPages.contains(nextPage)) {
             return
         }
         if (maxPages != 0 && currentPage >= maxPages) {
             return
         }
-
-        val nextPage = currentPage + 1
-        if (loadedPages.contains(nextPage)) {
-            return
-        }
-
         loadPage(page = nextPage, isFirstPage = false)
     }
 
@@ -83,6 +81,11 @@ class VacancySearchViewModel(
                 .collect { query ->
                     resetPaging()
                     currentQuery = query
+                    val stored = filterStorage.getFilterSettings()
+                    filterSettingsLiveData.value = stored
+                    sessionIndustryId = stored.industryId
+                    sessionSalary = stored.salary
+                    sessionOnlyWithSalary = stored.onlyWithSalary
                     loadPage(page = 1, isFirstPage = true)
                 }
         }
@@ -108,7 +111,13 @@ class VacancySearchViewModel(
 
         startLoading(isFirstPage)
         viewModelScope.launch {
-            val result = searchInteractor.searchVacancies(currentQuery, page)
+            val result = searchWithFilterInteractor.getFilteredVacancy(
+                currentQuery,
+                page,
+                sessionIndustryId,
+                sessionSalary,
+                sessionOnlyWithSalary
+            )
             stopLoading()
             handleResult(result, page, isFirstPage)
         }
@@ -126,7 +135,11 @@ class VacancySearchViewModel(
         _isNextPageLoading.value = false
     }
 
-    private suspend fun handleResult(result: Resource<ru.practicum.android.diploma.domain.search.models.SearchResult>, page: Int, isFirstPage: Boolean) {
+    private suspend fun handleResult(
+        result: Resource<ru.practicum.android.diploma.domain.search.models.SearchResult>,
+        page: Int,
+        isFirstPage: Boolean,
+    ) {
         if (result is Resource.Success) {
             handleSuccess(result.data, page, isFirstPage)
         } else if (result is Resource.Error) {
@@ -183,5 +196,48 @@ class VacancySearchViewModel(
                 _toast.emit("Произошла ошибка")
             }
         }
+    }
+
+    fun saveSearchToStorage(search: String) {
+        if (search.isEmpty()) {
+            return
+        }
+        val base = filterSettingsLiveData.value ?: filterStorage.getFilterSettings()
+        val updated = base.copy(searchField = search)
+        filterSettingsLiveData.value = updated
+        filterStorage.updateFilterSettings(updated)
+    }
+
+    fun getStoragedFilterSettings() {
+        val s = filterStorage.getFilterSettings()
+        filterSettingsLiveData.value = s
+        sessionIndustryId = s.industryId
+        sessionSalary = s.salary
+        sessionOnlyWithSalary = s.onlyWithSalary
+    }
+
+    fun refreshFilterIconFromStorage() {
+        filterSettingsLiveData.value = filterStorage.getFilterSettings()
+    }
+
+    fun onFilterApplied() {
+        val s = filterStorage.getFilterSettings()
+        filterSettingsLiveData.value = s
+        sessionIndustryId = s.industryId
+        sessionSalary = s.salary
+        sessionOnlyWithSalary = s.onlyWithSalary
+        if (currentQuery.isNotBlank()) {
+            reloadCurrentSearchFirstPage()
+        }
+    }
+
+    private fun reloadCurrentSearchFirstPage() {
+        loadedPages.clear()
+        vacancyIds.clear()
+        vacancies.clear()
+        currentPage = 0
+        maxPages = 0
+        _isNextPageLoading.value = false
+        loadPage(page = 1, isFirstPage = true)
     }
 }

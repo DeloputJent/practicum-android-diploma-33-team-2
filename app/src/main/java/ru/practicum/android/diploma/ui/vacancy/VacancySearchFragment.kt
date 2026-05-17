@@ -2,7 +2,9 @@ package ru.practicum.android.diploma.ui.vacancy
 
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -33,7 +35,7 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val buttonFilter = view.findViewById<View>(R.id.buttonFilter)
+        val buttonFilter = view.findViewById<ImageButton>(R.id.buttonFilter)
         val editInput = view.findViewById<EditText>(R.id.editInputToSearch)
         val inputIcon = view.findViewById<ImageView>(R.id.imageEditSign)
         val amountText = view.findViewById<TextView>(R.id.textAmountOfFounded)
@@ -46,6 +48,21 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
 
         recycler.adapter = vacancyAdapter
         recycler.layoutManager = LinearLayoutManager(requireContext())
+
+        viewModel.getStoragedFilterSettings()
+        editInput.setText(viewModel.observeFilterSettingsState().value?.searchField.orEmpty())
+        viewModel.observeFilterSettingsState().observe(viewLifecycleOwner) {
+            updateFilterIcon(!it.isSettingsEmpty(), buttonFilter)
+        }
+
+        findNavController().currentBackStackEntry?.savedStateHandle
+            ?.getLiveData<Boolean>("apply_filters")
+            ?.observe(viewLifecycleOwner) { applied ->
+                if (applied == true) {
+                    findNavController().currentBackStackEntry?.savedStateHandle?.remove<Boolean>("apply_filters")
+                    viewModel.onFilterApplied()
+                }
+            }
 
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -65,6 +82,19 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
             val value = text?.toString().orEmpty()
             viewModel.onQueryChanged(value)
             updateInputIcon(value.isNotBlank(), inputIcon, editInput)
+        }
+
+        editInput.setOnEditorActionListener { _, actionId, _ ->
+            val action = actionId == EditorInfo.IME_ACTION_DONE
+            if (action) {
+                val value = editInput.text?.toString().orEmpty()
+                if (value.isNotBlank()) {
+                    viewModel.onQueryChanged(value)
+                } else {
+                    viewModel.onQueryChanged("")
+                }
+            }
+            false
         }
 
         updateInputIcon(false, inputIcon, editInput)
@@ -161,8 +191,14 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         }
 
         buttonFilter.setOnClickListener {
+            viewModel.saveSearchToStorage(editInput.text.toString())
             findNavController().navigate(R.id.action_vacancySearchFragment_to_filterFragment)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshFilterIconFromStorage()
     }
 
     private fun openVacancyDetails(vacancyId: String) {
@@ -186,6 +222,17 @@ class VacancySearchFragment : Fragment(R.layout.fragment_vacancy_search) {
         } else {
             inputIcon.setImageResource(R.drawable.ic_search_24dp)
             inputIcon.setOnClickListener(null)
+        }
+    }
+
+    private fun updateFilterIcon(
+        filterSet: Boolean,
+        buttonFilter: ImageButton
+    ) {
+        if (filterSet) {
+            buttonFilter.setImageResource(R.drawable.ic_filter_on_24dp)
+        } else {
+            buttonFilter.setImageResource(R.drawable.ic_filter_off_24dp)
         }
     }
 }

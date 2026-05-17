@@ -24,6 +24,16 @@ import ru.practicum.android.diploma.domain.detail.model.VacancyDetails
 import ru.practicum.android.diploma.presentation.details.PhoneListAdapter
 
 class DetailFragment : Fragment() {
+    companion object {
+        private const val VACANCY_ID_KEY = "vacancyId"
+        private const val CORNER_RADIUS = 12f
+
+        fun createArgs(vacancyId: String): Bundle =
+            bundleOf(
+                VACANCY_ID_KEY to vacancyId,
+            )
+    }
+
     private lateinit var viewModel: DetailViewModel
     private var _binding: FragmentVacancyDetailBinding? = null
     private val binding get() = _binding!!
@@ -132,20 +142,26 @@ class DetailFragment : Fragment() {
             } else {
                 textAddress.text = vacancy.areaName
             }
-            Glide.with(requireContext())
-                .load(vacancy.employerLogo)
-                .centerCrop()
-                .transform(
-                    RoundedCorners(
-                        TypedValueCompat.dpToPx(
-                            CORNER_RADIUS,
-                            requireContext().resources.displayMetrics
+            if (vacancy.employerLogo.isBlank()) {
+                imageLogo.visibility = View.VISIBLE
+                imageLogo.setImageResource(R.drawable.ic_placeholder_logo_48dp)
+            } else {
+                imageLogo.visibility = View.VISIBLE
+                Glide.with(requireContext())
+                    .load(vacancy.employerLogo)
+                    .centerCrop()
+                    .transform(
+                        RoundedCorners(
+                            TypedValueCompat.dpToPx(
+                                CORNER_RADIUS,
+                                requireContext().resources.displayMetrics
+                            )
+                                .toInt()
                         )
-                            .toInt()
                     )
-                )
-                .placeholder(R.drawable.ic_placeholder_logo_48dp)
-                .into(binding.imageLogo)
+                    .placeholder(R.drawable.ic_placeholder_logo_48dp)
+                    .into(binding.imageLogo)
+            }
         }
     }
 
@@ -161,17 +177,8 @@ class DetailFragment : Fragment() {
     }
     private fun setEmployerContacts(vacancy: VacancyDetails) {
         binding.apply {
-            if (
-                vacancy.contactsName.isNullOrEmpty()
-                and vacancy.contactsEmail.isNullOrEmpty()
-                and vacancy.phones.isNullOrEmpty()
-            ) {
-                textContactsTitle.visibility = View.GONE
-                textContactsName.visibility = View.GONE
-                textContactsEmail.visibility = View.GONE
-                textEmailTitle.visibility = View.GONE
-                textPhones.visibility = View.GONE
-                textPhonesTitle.visibility = View.GONE
+            if (isContactsEmpty(vacancy)) {
+                ifContactsEmptyHide()
             } else {
                 if (!vacancy.contactsName.isNullOrEmpty()) {
                     textContactsName.text = vacancy.contactsName
@@ -191,6 +198,25 @@ class DetailFragment : Fragment() {
                     textPhonesTitle.visibility = View.GONE
                 }
             }
+        }
+    }
+
+    private fun isContactsEmpty(vacancy: VacancyDetails): Boolean {
+        binding.apply {
+            return (vacancy.contactsName.isNullOrEmpty()
+                and vacancy.contactsEmail.isNullOrEmpty()
+                and vacancy.phones.isNullOrEmpty())
+        }
+    }
+
+    private fun ifContactsEmptyHide() {
+        binding.apply {
+            textContactsTitle.visibility = View.GONE
+            textContactsName.visibility = View.GONE
+            textContactsEmail.visibility = View.GONE
+            textEmailTitle.visibility = View.GONE
+            textPhones.visibility = View.GONE
+            textPhonesTitle.visibility = View.GONE
         }
     }
 
@@ -254,15 +280,5 @@ class DetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val VACANCY_ID_KEY = "vacancyId"
-        private const val CORNER_RADIUS = 12f
-
-        fun createArgs(vacancyId: String): Bundle =
-            bundleOf(
-                VACANCY_ID_KEY to vacancyId,
-            )
     }
 }

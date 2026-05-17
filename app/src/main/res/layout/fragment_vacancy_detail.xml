@@ -154,7 +154,6 @@
                 android:layout_marginEnd="30dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -163,6 +162,7 @@
             app:layout_constraintEnd_toEndOf="@id/rightBorder"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="104dp"
+            android:visibility="gone"
             tools:visibility="visible">
             <TextView
                 android:id="@+id/textVacancyName"
